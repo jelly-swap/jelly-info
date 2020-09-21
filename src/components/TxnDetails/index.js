@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rebass'
+import { useMedia } from 'react-use'
 
 import FormattedName from '../FormattedName'
 import TokenLogo from '../TokenLogo'
 import Link from '../Link'
 
-import { formatDate } from '../../utils'
+import { formatAddress, formatDate } from '../../utils'
 
 import { STATUS, STATUS_COLOR } from '../../constants'
 import { ASSETS_MAP } from '../../constants/assets'
@@ -117,6 +118,8 @@ export default ({ transaction }) => {
     outputAmountNum
   } = transaction
 
+  const below780 = useMedia('(max-width: 780px)')
+
   return (
     <TransactionWrapper>
       <div className="transaction-wrapper">
@@ -124,7 +127,8 @@ export default ({ transaction }) => {
           <Link color={'#ff007a'} external href={`${ASSETS_MAP[network].txExplorer}${transactionHash}`}>
             {
               <>
-                <span className="label">Transaction hash:</span> {transactionHash}
+                <span className="label">Transaction hash:</span>{' '}
+                {below780 ? formatAddress(transactionHash) : transactionHash}
               </>
             }
           </Link>
@@ -155,7 +159,7 @@ export default ({ transaction }) => {
           <Link color={'#ff007a'} external href={`${ASSETS_MAP[network].addressExplorer}${sender}`}>
             {
               <>
-                <span className="label">From: </span> {sender}
+                <span className="label">From: </span> {below780 ? formatAddress(sender) : sender}
               </>
             }
           </Link>
@@ -164,7 +168,7 @@ export default ({ transaction }) => {
           <Link color={'#ff007a'} external href={`${ASSETS_MAP[outputNetwork].addressExplorer}${outputAddress}`}>
             {
               <>
-                <span className="label">To: </span> {outputAddress}
+                <span className="label">To: </span> {below780 ? formatAddress(outputAddress) : outputAddress}
               </>
             }
           </Link>
@@ -187,7 +191,8 @@ export default ({ transaction }) => {
             >
               {
                 <>
-                  <span className="label">{STATUS[status].toLowerCase()}: </span> {completenessTransactionHash}
+                  <span className="label">{STATUS[status].toLowerCase()}: </span>{' '}
+                  {below780 ? formatAddress(completenessTransactionHash) : completenessTransactionHash}
                 </>
               }
             </Link>

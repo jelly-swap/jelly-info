@@ -42,7 +42,7 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 1em;
-  grid-template-columns: 100px 1fr 1fr;
+  grid-template-columns: 100px 1fr 1fr 10px;
   grid-template-areas: 'txn amountToken time';
   position: relative;
 
