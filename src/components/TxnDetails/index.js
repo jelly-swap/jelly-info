@@ -2,14 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rebass'
 
+import FormattedName from '../FormattedName'
+import TokenLogo from '../TokenLogo'
 import Link from '../Link'
 
 import { formatAddress, formatDate } from '../../utils'
 
 import { STATUS, STATUS_COLOR } from '../../constants'
 import { ASSETS_MAP } from '../../constants/assets'
-import FormattedName from '../FormattedName'
-import TokenLogo from '../TokenLogo'
 
 const TransactionWrapper = styled.div`
   .transaction-wrapper {
