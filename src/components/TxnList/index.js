@@ -77,6 +77,7 @@ const DashGrid = styled.div`
     max-width: 1320px;
     grid-template-columns: 1.2fr 1fr 1fr 1fr;
     grid-template-areas: 'txn amountToken amountOther time';
+    cursor: pointer;
 
     > * {
       &:first-child {
@@ -89,6 +90,7 @@ const DashGrid = styled.div`
     max-width: 1320px;
     grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr 10px;
     grid-template-areas: 'txn amountToken amountOther from to time';
+    cursor: pointer;
   }
 `
 
