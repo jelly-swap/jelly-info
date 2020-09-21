@@ -175,7 +175,7 @@ function TxnList({ history, color }) {
     setPage(1)
   }, [txFilter])
 
-  const showTransaction = (transaction, rowNumber) => {
+  const expandTransaction = (transaction, rowNumber) => {
     if (rowNumber !== latestOpenRowRef.current) {
       latestOpenRowRef.current = rowNumber
       setRowToExpand(rowNumber)
@@ -323,7 +323,7 @@ function TxnList({ history, color }) {
         ) : (
           filteredList.map((item, index) => {
             return (
-              <div key={index} onClick={() => showTransaction(item, index)}>
+              <div key={index} onClick={() => expandTransaction(item, index)}>
                 <ListItem key={index} index={index + 1} item={item} />
                 <Divider />
               </div>
