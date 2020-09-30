@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
-import { formatDate } from '../../utils'
+import { formatAddress, formatDate } from '../../utils'
 import { useMedia } from 'react-use'
 
 import LocalLoader from '../LocalLoader'
@@ -13,6 +13,7 @@ import { Divider, EmptyCard } from '..'
 import FormattedName from '../FormattedName'
 import { TYPE } from '../../Theme'
 import { ASSETS_MAP } from '../../constants/assets'
+import TxnDetails from '../TxnDetails'
 
 dayjs.extend(utc)
 
@@ -41,8 +42,13 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 1em;
-  grid-template-columns: 100px 1fr 1fr;
+  grid-template-columns: 100px 1fr 1fr 10px;
   grid-template-areas: 'txn amountToken time';
+  position: relative;
+
+  & > div {
+    height: 48px;
+  }
 
   > * {
     justify-content: flex-end;
@@ -53,6 +59,10 @@ const DashGrid = styled.div`
       text-align: left;
       width: 100px;
     }
+  }
+
+  &.expand {
+    margin-bottom: 270px;
   }
 
   @media screen and (min-width: 500px) {
@@ -67,6 +77,7 @@ const DashGrid = styled.div`
     max-width: 1320px;
     grid-template-columns: 1.2fr 1fr 1fr 1fr;
     grid-template-areas: 'txn amountToken amountOther time';
+    cursor: pointer;
 
     > * {
       &:first-child {
@@ -77,8 +88,9 @@ const DashGrid = styled.div`
 
   @media screen and (min-width: 1080px) {
     max-width: 1320px;
-    grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr 10px;
     grid-template-areas: 'txn amountToken amountOther from to time';
+    cursor: pointer;
   }
 `
 
@@ -138,6 +150,11 @@ function TxnList({ history, color }) {
   const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.TIMESTAMP)
   const [txFilter] = useState(TXN_TYPE.ALL)
 
+  const [transactionToShow, setTransactionToShow] = useState()
+  const [rowToExpand, setRowToExpand] = useState()
+
+  const latestOpenRowRef = useRef()
+
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
     setPage(1)
@@ -160,6 +177,18 @@ function TxnList({ history, color }) {
     setPage(1)
   }, [txFilter])
 
+  const expandTransaction = (transaction, rowNumber) => {
+    if (rowNumber !== latestOpenRowRef.current) {
+      latestOpenRowRef.current = rowNumber
+      setRowToExpand(rowNumber)
+      setTransactionToShow(transaction)
+    } else {
+      latestOpenRowRef.current = null
+      setRowToExpand(null)
+      setTransactionToShow(null)
+    }
+  }
+
   const filteredList =
     history &&
     history
@@ -173,9 +202,9 @@ function TxnList({ history, color }) {
   const below1080 = useMedia('(max-width: 1080px)')
   const below780 = useMedia('(max-width: 780px)')
 
-  const ListItem = ({ item }) => {
+  const ListItem = ({ item, index }) => {
     return (
-      <DashGrid style={{ height: '48px' }}>
+      <DashGrid style={{ height: '48px' }} className={`${index - 1 === rowToExpand ? 'expand' : ''}`}>
         <DataText area="txn" fontWeight="500">
           <Link color={color} external href={`${ASSETS_MAP[item.network].txExplorer}${item.transactionHash}`}>
             {`Swap ${item.network} for ${item.outputNetwork}`}
@@ -197,7 +226,7 @@ function TxnList({ history, color }) {
           <>
             <DataText area="from">
               <Link color={color} external href={`${ASSETS_MAP[item.network].addressExplorer}${item.sender}`}>
-                {item.sender && item.sender.slice(0, 6) + '...' + item.sender.slice(38, 42)}
+                {item.sender && formatAddress(item.sender)}
               </Link>
             </DataText>
           </>
@@ -210,12 +239,15 @@ function TxnList({ history, color }) {
               external
               href={`${ASSETS_MAP[item.outputNetwork].addressExplorer}${item.outputAddress}`}
             >
-              {item.outputAddress && item.outputAddress.slice(0, 6) + '...' + item.outputAddress.slice(38, 42)}
+              {item.outputAddress && formatAddress(item.outputAddress)}
             </Link>
           </DataText>
         )}
 
         <DataText area="time">{formatDate(item.expiration)}</DataText>
+
+        {index - 1 === rowToExpand ? <DataText area="time">↑</DataText> : <DataText area="time">↓</DataText>}
+        {index - 1 === rowToExpand && <TxnDetails transaction={transactionToShow} />}
       </DashGrid>
     )
   }
@@ -293,7 +325,7 @@ function TxnList({ history, color }) {
         ) : (
           filteredList.map((item, index) => {
             return (
-              <div key={index}>
+              <div key={index} onClick={() => expandTransaction(item, index)}>
                 <ListItem key={index} index={index + 1} item={item} />
                 <Divider />
               </div>
