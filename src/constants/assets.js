@@ -32,14 +32,6 @@ export const ASSETS_MAP = {
     timestampMs: true // if timestamp is in milliseconds
   },
 
-  // CAPT: {
-  //   name: 'Captain Bitcoin',
-  //   symbol: 'CAPT',
-  //   decimals: 18,
-  //   txExplorer: 'https://etherscan.io/tx/',
-  //   addressExplorer: 'https://etherscan.io/address/'
-  // },
-
   WBTC: {
     name: 'Wrapped BTC',
     symbol: 'WBTC',
@@ -78,6 +70,14 @@ export const ASSETS_MAP = {
     decimals: 18,
     txExplorer: 'https://cchain.explorer.avax.network/tx/',
     addressExplorer: 'https://cchain.explorer.avax.network/address/'
+  },
+
+  BNB: {
+    name: 'Binance Coin',
+    symbol: 'BNB',
+    decimals: 18,
+    txExplorer: 'https://bscscan.com/tx/',
+    addressExplorer: 'https://bscscan.com/address/'
   }
 }
 
