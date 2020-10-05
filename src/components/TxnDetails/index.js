@@ -184,11 +184,7 @@ export default ({ transaction }) => {
 
         {completenessTransactionHash && (
           <div>
-            <Link
-              color={'#ff007a'}
-              external
-              href={`${ASSETS_MAP[outputNetwork].txExplorer}${completenessTransactionHash}`}
-            >
+            <Link color={'#ff007a'} external href={`${ASSETS_MAP[network].txExplorer}${completenessTransactionHash}`}>
               {
                 <>
                   <span className="label">{STATUS[status].toLowerCase()}: </span>{' '}
