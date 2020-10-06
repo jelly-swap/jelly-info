@@ -78,6 +78,14 @@ export const ASSETS_MAP = {
     decimals: 18,
     txExplorer: 'https://bscscan.com/tx/',
     addressExplorer: 'https://bscscan.com/address/'
+  },
+
+  ALGO: {
+    name: 'Algorand',
+    symbol: 'ALGO',
+    decimals: 6,
+    txExplorer: 'https://algoexplorer.io/tx/',
+    addressExplorer: 'https://algoexplorer.io/address/'
   }
 }
 
