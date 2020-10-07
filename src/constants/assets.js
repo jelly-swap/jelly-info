@@ -86,6 +86,14 @@ export const ASSETS_MAP = {
     decimals: 6,
     txExplorer: 'https://algoexplorer.io/tx/',
     addressExplorer: 'https://algoexplorer.io/address/'
+  },
+
+  TBTC: {
+    name: 'tBTC',
+    symbol: 'TBTC',
+    decimals: 18,
+    txExplorer: 'https://etherscan.io/tx/',
+    addressExplorer: 'https://etherscan.io/address/'
   }
 }
 
