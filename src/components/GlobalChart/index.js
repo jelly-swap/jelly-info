@@ -20,6 +20,7 @@ const GlobalChart = ({ display }) => {
 
   const totalLiquidity = useTotalLiquidity()
   const dailyData = useLiquidityChart()
+  dailyData.push({ date: Number(dailyData[dailyData.length - 1].date) + 86400, totalLiquidityUsd: totalLiquidity })
 
   const liquidityChange = getPercentChange(totalLiquidity, dailyData[dailyData.length - 2].totalLiquidityUsd)
 
