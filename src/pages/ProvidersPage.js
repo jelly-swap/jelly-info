@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { Flex, Text, Box } from 'rebass'
 import { transparentize } from 'polished'
 
-import Link from '../components/Link'
 import LocalLoader from '../components/LocalLoader'
 import Panel from '../components/Panel'
 import { PageWrapper, ContentWrapper } from '../components'
@@ -111,7 +111,7 @@ const calculateTotalUSD = (providers, tokens) => {
 function ProvidersPage({ color = '#ff007a' }) {
   const providers = useProviders()
   const tokens = useAllTokens()
-
+  const history = useHistory()
 
   const totalProvidedUSDFromEachProvider = useMemo(() => {
     if (!providers || !tokens) {
@@ -121,16 +121,16 @@ function ProvidersPage({ color = '#ff007a' }) {
     return calculateTotalUSD(providers, tokens)
   }, [providers, tokens])
 
-
   if (!providers) {
     return <LocalLoader fill="true" />
   }
 
   const ListItem = ({ provider }) => <DashGrid style={{ height: '48px' }}>
-    <DataText area="provider" fontWeight="500">
-      <Link color={color} external style={{ cursor: 'pointer' }}>
-        {provider}
-      </Link>
+    <DataText area="provider" fontWeight="500" style={{
+      fontWeight: 500,
+      cursor: 'pointer'
+    }} color={color} onClick={() => history.push(`/provider/${provider}`)}>
+      {provider}
     </DataText>
     <DataText area="provider" fontWeight="500">
       {totalProvidedUSDFromEachProvider[provider].toFixed(2) + ' $'}
