@@ -1,28 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Flex, Text, Box } from 'rebass'
 import { transparentize } from 'polished'
 
+import Link from '../components/Link'
 import LocalLoader from '../components/LocalLoader'
+import Panel from '../components/Panel'
 import { PageWrapper, ContentWrapper } from '../components'
 import { TYPE, ThemedBackground } from '../Theme'
 import { RowBetween } from '../components/Row'
-import Panel from '../components/Panel'
 import { Divider } from '../components/'
-import Link from '../components/Link'
+
+import { useProviders } from '../contexts/Providers'
+import { useAllTokens } from '../contexts/TokenData'
+
+import { safeAccess } from '../utils'
 
 const List = styled(Box)`
   -webkit-overflow-scrolling: touch;
 `
 
-
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 1em;
   grid-template-columns: 100px 1fr 1fr;
-  grid-template-areas: 'name liq price';
-  padding: 0 1.125rem;
+  position: relative;
 
   > * {
     justify-content: flex-end;
@@ -38,7 +40,7 @@ const DashGrid = styled.div`
     display: grid;
     grid-gap: 1em;
     grid-template-columns: 180px 1fr 1fr 1fr;
-    grid-template-areas: 'name symbol liq';
+
 
     > * {
       justify-content: flex-end;
@@ -54,7 +56,6 @@ const DashGrid = styled.div`
     display: grid;
     grid-gap: 0.5em;
     grid-template-columns: 1.5fr 0.6fr 1fr 1fr;
-    grid-template-areas: 'name symbol liq price change';
   }
 `
 
@@ -76,6 +77,7 @@ const ClickableText = styled(Text)`
   color: ${({ theme }) => theme.text1};
   user-select: none;
   text-align: end;
+  padding-bottom: 1rem;
 
   &:hover {
     cursor: pointer;
@@ -87,49 +89,54 @@ const ClickableText = styled(Text)`
   }
 `
 
-const MOCKED_LIST = [
-  { id: 1, address: '0x321321321', balance: '432423432' },
-  { id: 2, address: '434343', balance: '4324233433432' },
-  { id: 3, address: '343324', balance: '3224' },
-]
+const calculateTotalUSD = (providers, tokens) => {
+  const totalUSD = {}
+
+  Object.keys(providers)
+    .forEach(provider => {
+      const balances = safeAccess(providers, [provider, 'balances'])
+
+      totalUSD[provider] = 0;
+
+      Object.keys(balances)
+        .forEach(asset => {
+          const token = tokens.find(t => t.symbol === asset)
+          totalUSD[provider] += Number(balances[asset].balance) * Number(token.priceUSD)
+        })
+    })
+
+  return totalUSD
+}
 
 function ProvidersPage({ color = '#ff007a' }) {
-  const [providersData, setProvidersData] = useState()
+  const providers = useProviders()
+  const tokens = useAllTokens()
 
-  useEffect(() => {
 
-    (async () => {
-       try {
-         const response = await axios.get('https://jelly-jam.herokuapp.com/api/v1/info/get')
+  const totalProvidedUSDFromEachProvider = useMemo(() => {
+    if (!providers || !tokens) {
+      return
+    }
 
-         setProvidersData(response.data)
-       } catch (error) {
-         console.log('Error getting liquidity providers', error)
-      }
-    })()
-  }, [])
+    return calculateTotalUSD(providers, tokens)
+  }, [providers, tokens])
 
-  if (!providersData) {
+
+  if (!providers) {
     return <LocalLoader fill="true" />
   }
 
-  const ListItem = ({ item }) => {
-    return (
-      <DashGrid style={{ height: '48px' }}>
-        <DataText area="provider" fontWeight="500">
-          <Link color={color} external>
-            {item.id}
-          </Link>
-        </DataText>
-        <DataText area="address" fontWeight="500">
-          {item.address}
-        </DataText>
-        <DataText area="balance" fontWeight="500">
-          {item.balance}
-        </DataText>
-      </DashGrid>
-    )
-  }
+  const ListItem = ({ provider }) => <DashGrid style={{ height: '48px' }}>
+    <DataText area="provider" fontWeight="500">
+      <Link color={color} external style={{ cursor: 'pointer' }}>
+        {provider}
+      </Link>
+    </DataText>
+    <DataText area="provider" fontWeight="500">
+      {totalProvidedUSDFromEachProvider[provider].toFixed(2) + ' $'}
+    </DataText>
+  </DashGrid>
+
 
   return (
     <PageWrapper>
@@ -138,34 +145,26 @@ function ProvidersPage({ color = '#ff007a' }) {
         <RowBetween mt={40} mb={'1rem'}>
           <TYPE.main fontSize={'1.125rem'}>Providers</TYPE.main> <div />
         </RowBetween>
-
         <Panel>
           <DashGrid>
             <Flex alignItems="center">
               <ClickableText
-                color="textDim">
+                color="textDim"
+              >
                 Provider
-            </ClickableText>
+              </ClickableText>
             </Flex>
-
             <Flex alignItems="center">
               <ClickableText
                 color="textDim">
-                Pairs
-            </ClickableText>
-            </Flex>
-
-            <Flex alignItems="center">
-              <ClickableText
-                color="textDim">
-                Balances
+                Total provided USD$
               </ClickableText>
             </Flex>
           </DashGrid>
           <Divider />
           <List p={0}>
-            {MOCKED_LIST.map(item =>
-              <ListItem key={item.id} item={item} />
+            {Object.keys(providers).map((provider, idx) =>
+              <ListItem key={provider} provider={provider} />
             )}
           </List>
         </Panel>
