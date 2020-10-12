@@ -3,22 +3,23 @@ import { useMedia } from 'react-use';
 import { useParams, useLocation } from 'react-router-dom';
 import { transparentize } from 'polished'
 
-import LocalLoader from '../components/LocalLoader'
-import { PageWrapper, ContentWrapper } from '../components'
-import { RowBetween } from '../components/Row'
-import { TYPE, ThemedBackground } from '../Theme'
-
 import { useProvider } from '../contexts/Providers';
 import { useRewards } from '../contexts/Rewards';
+import { useHistory } from '../contexts/History';
 
+import LocalLoader from '../components/LocalLoader'
+import Pagination from '../components/common/Pagination';
 import FormattedName from '../components/FormattedName';
 import SingleProviderContent from '../components/SingleProviderContent';
 import Link from '../components/Link';
 import { DashGrid, DataText } from '../components/common';
+import { PageWrapper, ContentWrapper } from '../components'
+import { RowBetween } from '../components/Row'
+import { TYPE, ThemedBackground } from '../Theme'
+
 import { ASSETS_MAP } from '../constants/assets';
-import { useHistory } from '../contexts/History';
+
 import { formatAddress, formatDate } from '../utils';
-import Pagination from '../components/common/Pagination';
 
 const MAX_ITEMS = 10;
 const START_PAGE = 1;
@@ -179,7 +180,6 @@ function SingleProviderPage({ color = '#ff007a' }) {
         asset,
         address: balances[asset].address,
         balance: balances[asset].balance
-
       }
     }))
   }
