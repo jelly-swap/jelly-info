@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -7,35 +7,15 @@ import { formattedNum } from '../../utils'
 import { useMedia } from 'react-use'
 
 import LocalLoader from '../LocalLoader'
-import { Box, Flex, Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import Link from '../Link'
 import { Divider, EmptyCard } from '..'
 import FormattedName from '../FormattedName'
 import { TYPE } from '../../Theme'
+import { usePagination } from '../../hooks/usePagination'
+import { Arrow, PageButtons, List, DataText } from '../common'
 
 dayjs.extend(utc)
-
-const PageButtons = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 2em;
-  margin-bottom: 0.5em;
-`
-
-const Arrow = styled.div`
-  color: #2f80ed;
-  opacity: ${props => (props.faded ? 0.3 : 1)};
-  padding: 0 20px;
-  user-select: none;
-  :hover {
-    cursor: pointer;
-  }
-`
-
-const List = styled(Box)`
-  -webkit-overflow-scrolling: touch;
-`
 
 const DashGrid = styled.div`
   display: grid;
@@ -95,21 +75,6 @@ const ClickableText = styled(Text)`
     font-size: 14px;
   }
 `
-
-const DataText = styled(Flex)`
-  align-items: center;
-  text-align: right;
-  color: ${({ theme }) => theme.text1};
-
-  & > * {
-    font-size: 1em;
-  }
-
-  @media screen and (max-width: 40em) {
-    font-size: 0.85rem;
-  }
-`
-
 const SORT_FIELD = {
   LIQUIDITY: 'usd',
   REWARD: 'reward',
@@ -118,31 +83,11 @@ const SORT_FIELD = {
 
 // @TODO rework into virtualized list
 function RewardsList({ rewards, color, itemMax = 20 }) {
-  // page state
-  const [page, setPage] = useState(1)
-  const [maxPage, setMaxPage] = useState(1)
-
   // sorting
   const [sortDirection, setSortDirection] = useState(true)
   const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.DATE)
 
-  useEffect(() => {
-    setMaxPage(1) // edit this to do modular
-    setPage(1)
-  }, [rewards])
-
-  // parse the txns and format for UI
-  useEffect(() => {
-    let extraPages = 1
-    if (rewards.length % itemMax === 0) {
-      extraPages = 0
-    }
-    if (rewards.length === 0) {
-      setMaxPage(1)
-    } else {
-      setMaxPage(Math.floor(rewards.length / itemMax) + extraPages)
-    }
-  }, [rewards, itemMax])
+  const { page, setPage, maxPage } = usePagination(rewards);
 
   const filteredList =
     rewards &&
@@ -240,15 +185,15 @@ function RewardsList({ rewards, color, itemMax = 20 }) {
         ) : filteredList.length === 0 ? (
           <EmptyCard>No recent transactions found.</EmptyCard>
         ) : (
-          filteredList.map((item, index) => {
-            return (
-              <div key={index}>
-                <ListItem key={index} index={index + 1} item={item} />
-                <Divider />
-              </div>
-            )
-          })
-        )}
+              filteredList.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <ListItem key={index} index={index + 1} item={item} />
+                    <Divider />
+                  </div>
+                )
+              })
+            )}
       </List>
       <PageButtons>
         <div

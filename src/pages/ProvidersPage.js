@@ -39,7 +39,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 680px) {
     display: grid;
     grid-gap: 1em;
-    grid-template-columns: 180px 1fr 1fr 1fr;
+    grid-template-columns:1.5fr 1fr;
 
 
     > * {
@@ -55,7 +55,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 1.5fr 0.6fr 1fr 1fr;
+    grid-template-columns: 1.5fr 1fr;
   }
 `
 
@@ -113,7 +113,7 @@ function ProvidersPage({ color = '#ff007a' }) {
   const tokens = useAllTokens()
   const history = useHistory()
 
-  const totalProvidedUSDFromEachProvider = useMemo(() => {
+  const totalLiquidityPerProvider = useMemo(() => {
     if (!providers || !tokens) {
       return
     }
@@ -126,14 +126,16 @@ function ProvidersPage({ color = '#ff007a' }) {
   }
 
   const ListItem = ({ provider }) => <DashGrid style={{ height: '48px' }}>
-    <DataText area="provider" fontWeight="500" style={{
+    <DataText style={{
       fontWeight: 500,
       cursor: 'pointer'
-    }} color={color} onClick={() => history.push(`/provider/${provider}`)}>
+    }} color={color} onClick={() => history.push(`/provider/${provider}`, {
+      totalLiquidity: totalLiquidityPerProvider[provider]
+    })}>
       {provider}
     </DataText>
-    <DataText area="provider" fontWeight="500">
-      {totalProvidedUSDFromEachProvider[provider].toFixed(2) + ' $'}
+    <DataText fontWeight="500">
+      {'$' + totalLiquidityPerProvider[provider].toFixed(2)}
     </DataText>
   </DashGrid>
 
