@@ -6,12 +6,12 @@ import { TYPE } from '../../../Theme';
 import { usePagination } from '../../../hooks/usePagination';
 
 export default ({ collection, onPageChange }) => {
-
   const { page, setPage, maxPage } = usePagination(collection);
 
   useEffect(() => {
     onPageChange(page);
-  }, [page, onPageChange])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
 
   return (
     <PageButtons >
