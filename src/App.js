@@ -13,6 +13,7 @@ import { useAllPrices } from './contexts/Price'
 import RewardsPage from './pages/RewardsPage'
 import { useTotalLiquidity } from './contexts/TokenData'
 import { useRewards } from './contexts/Rewards'
+import ProvidersPage from './pages/ProvidersPage'
 
 const AppWrapper = styled.div`
   position: relative;
@@ -102,6 +103,12 @@ function App() {
             <Route path="/rewards">
               <LayoutWrapper>
                 <RewardsPage />
+              </LayoutWrapper>
+            </Route>
+
+            <Route path="/providers">
+              <LayoutWrapper>
+                <ProvidersPage />
               </LayoutWrapper>
             </Route>
 

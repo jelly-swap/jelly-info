@@ -110,6 +110,12 @@ function SideNav({ history }) {
                     Rewards
                   </Option>
                 </BasicLink>
+                 <BasicLink to="/providers">
+                  <Option activeText={history.location.pathname === '/providers' ?? undefined}>
+                    <Framer size={20} style={{ marginRight: '.75rem' }} />
+                    Providers
+                  </Option>
+                </BasicLink>
               </AutoColumn>
             )}
           </AutoColumn>
