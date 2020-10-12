@@ -137,7 +137,7 @@ export default ({ transaction }) => {
           <span className="label">Status:</span>
           <DataText>
             <span style={{ textTransform: 'capitalize', color: STATUS_COLOR[STATUS[status]] }}>
-              {STATUS[status].toLowerCase()}
+              <strong>{STATUS[status].toLowerCase()}</strong>
             </span>
           </DataText>
         </div>

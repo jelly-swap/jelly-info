@@ -15,9 +15,9 @@ export const STATUS = {
 }
 
 export const STATUS_COLOR = {
-  INVALID: 'grey',
-  COMPLETED: 'green',
-  ACTIVE: 'yellow',
-  EXPIRED: 'grey',
-  REFUNDED: 'green'
+  INVALID: '#e7303c',
+  COMPLETED: '#66a02c',
+  ACTIVE: '#ff6f00',
+  EXPIRED: '#e7303c',
+  REFUNDED: '#66a02c'
 }
