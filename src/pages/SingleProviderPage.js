@@ -23,6 +23,23 @@ import { formatAddress, formatDate } from '../utils'
 const MAX_ITEMS = 10
 const START_PAGE = 1
 
+const TABLE_COLUMNS = {
+  REWARDS: ['Liquidity', 'Reward', 'Date'],
+  TRANSACTIONS(currentResolution) {
+    if (currentResolution.below780) {
+      return ['Pair', 'Coin Amount', 'Expiration']
+    }
+
+    if (currentResolution.below1080) {
+      return ['Pair', 'Coin Amount', 'Coin Amount', 'Expiration']
+    }
+
+    return ['Pair', 'Coin Amount', 'Coin Amount', 'From', 'To', 'Expiration']
+  },
+  BALANCES: ['Address', 'Balance'],
+  PAIRS: ['Pair', 'Fee']
+}
+
 function SingleProviderPage({ color = '#ff007a' }) {
   const { totalLiquidity } = useLocation().state
   const providerName = useParams().provider
@@ -70,101 +87,6 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
   const { balances, pairs } = provider
 
-  const RewardsListItem = ({ reward }) => {
-    return (
-      <DashGrid style={{ height: '48px' }}>
-        <DataText fontWeight="500">{'$' + reward.usd.toFixed(2)}</DataText>
-        <DataText fontWeight="500">{'$' + reward.reward.toFixed(2)}</DataText>
-        <DataText fontWeight="500">{reward.date}</DataText>
-      </DashGrid>
-    )
-  }
-
-  const BalancesListItem = ({ balanceInfo }) => {
-    const { address, balance, asset } = balanceInfo
-
-    const explorer = ASSETS_MAP[asset].addressExplorer
-
-    return (
-      <DashGrid style={{ height: '48px', gridTemplateColumns: '2fr 1fr' }}>
-        <DataText fontWeight="500">
-          <Link color={color} external href={`${explorer}${address}`}>
-            {address}
-          </Link>
-        </DataText>
-
-        <DataText fontWeight="500">
-          {Number(balance).toFixed(5)} {asset}
-        </DataText>
-      </DashGrid>
-    )
-  }
-
-  const PairsListItem = ({ pair, fee }) => {
-    return (
-      <DashGrid style={{ height: '48px', gridTemplateColumns: '2fr 1fr' }}>
-        <DataText fontWeight="500">{pair}</DataText>
-
-        <DataText fontWeight="500">{fee} %</DataText>
-      </DashGrid>
-    )
-  }
-
-  const TransactionListItem = ({ transaction }) => {
-    return (
-      <DashGrid style={{ height: '48px', gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px' }}>
-        <DataText area="txn" fontWeight="500">
-          <Link
-            color={color}
-            external
-            href={`${ASSETS_MAP[transaction.network].txExplorer}${transaction.transactionHash}`}
-          >
-            {`Swap ${transaction.network} for ${transaction.outputNetwork}`}
-          </Link>
-        </DataText>
-
-        <DataText area="amountToken">
-          {transaction.inputAmountNum} <FormattedName text={transaction.network} maxCharacters={5} margin={true} />
-        </DataText>
-
-        {!below780 && (
-          <DataText area="amountOther">
-            {transaction.outputAmountNum}
-            <FormattedName text={transaction.outputNetwork} maxCharacters={5} margin={true} />
-          </DataText>
-        )}
-
-        {!below1080 && (
-          <>
-            <DataText area="from">
-              <Link
-                color={color}
-                external
-                href={`${ASSETS_MAP[transaction.network].addressExplorer}${transaction.sender}`}
-              >
-                {transaction.sender && formatAddress(transaction.sender)}
-              </Link>
-            </DataText>
-          </>
-        )}
-
-        {!below1080 && (
-          <DataText area="to">
-            <Link
-              color={color}
-              external
-              href={`${ASSETS_MAP[transaction.outputNetwork].addressExplorer}${transaction.outputAddress}`}
-            >
-              {transaction.outputAddress && formatAddress(transaction.outputAddress)}
-            </Link>
-          </DataText>
-        )}
-
-        <DataText area="time">{formatDate(transaction.expiration)}</DataText>
-      </DashGrid>
-    )
-  }
-
   const filterRewards = page => {
     setFilteredRewards(rewardsForProvider.slice(MAX_ITEMS * (page - START_PAGE), page * MAX_ITEMS))
   }
@@ -207,19 +129,22 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
         <SingleProviderContent
           title="Rewards"
-          columns={['Liquidity', 'Reward', 'Date']}
+          columns={TABLE_COLUMNS.REWARDS}
           collection={rewardsForProvider}
           onPageChange={filterRewards}
           emptyListMessage="No rewards were found"
         >
           {filteredRewards.map(reward => (
-            <RewardsListItem key={reward.date} reward={reward} />
+            <RewardsListItem key={reward.date} reward={reward} color={color} />
           ))}
         </SingleProviderContent>
 
         <SingleProviderContent
           title="Transactions"
-          columns={['Pair', 'Coin Amount', 'Coin Amount', 'From', 'To', 'Expiration']}
+          columns={TABLE_COLUMNS.TRANSACTIONS({
+            below780,
+            below1080
+          })}
           collection={transactionsFromProvider}
           onPageChange={filterTransactions}
           emptyListMessage="No transactions were found"
@@ -228,7 +153,13 @@ function SingleProviderPage({ color = '#ff007a' }) {
           }}
         >
           {filteredTransactions.map(transaction => (
-            <TransactionListItem key={transaction.id} transaction={transaction} />
+            <TransactionListItem
+              key={transaction.id}
+              transaction={transaction}
+              color={color}
+              below780={below780}
+              below1080={below1080}
+            />
           ))}
         </SingleProviderContent>
 
@@ -243,7 +174,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
           }}
         >
           {filteredBalances.map((balanceInfo, idx) => (
-            <BalancesListItem key={idx} balanceInfo={balanceInfo} />
+            <BalancesListItem key={idx} balanceInfo={balanceInfo} color={color} />
           ))}
         </SingleProviderContent>
 
@@ -258,7 +189,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
           }}
         >
           {filteredPairs.map((pair, idx) => (
-            <PairsListItem key={idx} fee={pairs[pair].FEE} pair={pair} />
+            <PairsListItem key={idx} fee={pairs[pair].FEE} pair={pair} color={color} />
           ))}
         </SingleProviderContent>
       </ContentWrapper>
@@ -267,3 +198,98 @@ function SingleProviderPage({ color = '#ff007a' }) {
 }
 
 export default SingleProviderPage
+
+const RewardsListItem = ({ reward, color }) => {
+  return (
+    <DashGrid style={{ height: '48px' }}>
+      <DataText fontWeight="500">{'$' + reward.usd.toFixed(2)}</DataText>
+      <DataText fontWeight="500">{'$' + reward.reward.toFixed(2)}</DataText>
+      <DataText fontWeight="500">{reward.date}</DataText>
+    </DashGrid>
+  )
+}
+
+const BalancesListItem = ({ balanceInfo, color }) => {
+  const { address, balance, asset } = balanceInfo
+
+  const explorer = ASSETS_MAP[asset].addressExplorer
+
+  return (
+    <DashGrid style={{ height: '48px', gridTemplateColumns: '2fr 1fr' }}>
+      <DataText fontWeight="500">
+        <Link color={color} external href={`${explorer}${address}`}>
+          {address}
+        </Link>
+      </DataText>
+
+      <DataText fontWeight="500">
+        {Number(balance).toFixed(5)} {asset}
+      </DataText>
+    </DashGrid>
+  )
+}
+
+const PairsListItem = ({ pair, fee, color }) => {
+  return (
+    <DashGrid style={{ height: '48px', gridTemplateColumns: '2fr 1fr' }}>
+      <DataText fontWeight="500">{pair}</DataText>
+
+      <DataText fontWeight="500">{fee} %</DataText>
+    </DashGrid>
+  )
+}
+
+const TransactionListItem = ({ transaction, color, below780, below1080 }) => {
+  return (
+    <DashGrid style={{ height: '48px', gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px' }}>
+      <DataText area="txn" fontWeight="500">
+        <Link
+          color={color}
+          external
+          href={`${ASSETS_MAP[transaction.network].txExplorer}${transaction.transactionHash}`}
+        >
+          {`Swap ${transaction.network} for ${transaction.outputNetwork}`}
+        </Link>
+      </DataText>
+
+      <DataText area="amountToken">
+        {transaction.inputAmountNum} <FormattedName text={transaction.network} maxCharacters={5} margin={true} />
+      </DataText>
+
+      {!below780 && (
+        <DataText area="amountOther">
+          {transaction.outputAmountNum}
+          <FormattedName text={transaction.outputNetwork} maxCharacters={5} margin={true} />
+        </DataText>
+      )}
+
+      {!below1080 && (
+        <>
+          <DataText area="from">
+            <Link
+              color={color}
+              external
+              href={`${ASSETS_MAP[transaction.network].addressExplorer}${transaction.sender}`}
+            >
+              {transaction.sender && formatAddress(transaction.sender)}
+            </Link>
+          </DataText>
+        </>
+      )}
+
+      {!below1080 && (
+        <DataText area="to">
+          <Link
+            color={color}
+            external
+            href={`${ASSETS_MAP[transaction.outputNetwork].addressExplorer}${transaction.outputAddress}`}
+          >
+            {transaction.outputAddress && formatAddress(transaction.outputAddress)}
+          </Link>
+        </DataText>
+      )}
+
+      <DataText area="time">{formatDate(transaction.expiration)}</DataText>
+    </DashGrid>
+  )
+}
