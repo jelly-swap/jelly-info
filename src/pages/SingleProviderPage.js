@@ -161,8 +161,6 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
     const LPRewards = rewards.filter(entity => entity.name === providerName)
 
-    setFilteredRewards(LPRewards.slice(MAX_ITEMS * (START_PAGE - START_PAGE), START_PAGE * MAX_ITEMS))
-
     return LPRewards
   }, [rewards, providerName])
 
@@ -174,8 +172,6 @@ function SingleProviderPage({ color = '#ff007a' }) {
     const transactions = history.filter(entity =>
       Object.values(provider.addresses).includes(entity.sender || entity.receiver)
     )
-
-    setFilteredTransactions(transactions.slice(MAX_ITEMS * (START_PAGE - START_PAGE), START_PAGE * MAX_ITEMS))
 
     return transactions
   }, [provider, history])
