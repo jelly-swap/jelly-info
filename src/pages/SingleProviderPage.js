@@ -102,7 +102,7 @@ const TABLE_CONFIG = {
     EMPTY_LIST_MSG: 'No pairs were found',
     PAGE: START_PAGE,
     ORDER: 'desc',
-    GRID_TEMPLATE: '2fr 1fr 1fr',
+    GRID_TEMPLATE: '1fr 1fr 1fr',
     COLUMN: 'price',
     COLUMNS: {
       Pair: 'pair',
