@@ -39,8 +39,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 680px) {
     display: grid;
     grid-gap: 1em;
-    grid-template-columns:1.5fr 1fr;
-
+    grid-template-columns: 1.5fr 1fr;
 
     > * {
       justify-content: flex-end;
@@ -92,18 +91,16 @@ const ClickableText = styled(Text)`
 const calculateTotalUSD = (providers, tokens) => {
   const totalUSD = {}
 
-  Object.keys(providers)
-    .forEach(provider => {
-      const balances = safeAccess(providers, [provider, 'balances'])
+  Object.keys(providers).forEach(provider => {
+    const balances = safeAccess(providers, [provider, 'balances'])
 
-      totalUSD[provider] = 0;
+    totalUSD[provider] = 0
 
-      Object.keys(balances)
-        .forEach(asset => {
-          const token = tokens.find(t => t.symbol === asset)
-          totalUSD[provider] += Number(balances[asset].balance) * Number(token.priceUSD)
-        })
+    Object.keys(balances).forEach(asset => {
+      const token = tokens.find(t => t.symbol === asset)
+      totalUSD[provider] += Number(balances[asset].balance) * Number(token.priceUSD)
     })
+  })
 
   return totalUSD
 }
@@ -125,20 +122,25 @@ function ProvidersPage({ color = '#ff007a' }) {
     return <LocalLoader fill="true" />
   }
 
-  const ListItem = ({ provider }) => <DashGrid style={{ height: '48px' }}>
-    <DataText style={{
-      fontWeight: 500,
-      cursor: 'pointer'
-    }} color={color} onClick={() => history.push(`/provider/${provider}`, {
-      totalLiquidity: totalLiquidityPerProvider[provider]
-    })}>
-      {provider}
-    </DataText>
-    <DataText fontWeight="500">
-      {'$' + totalLiquidityPerProvider[provider].toFixed(2)}
-    </DataText>
-  </DashGrid>
-
+  const ListItem = ({ provider }) => (
+    <DashGrid style={{ height: '48px' }}>
+      <DataText
+        style={{
+          fontWeight: 500,
+          cursor: 'pointer'
+        }}
+        color={color}
+        onClick={() =>
+          history.push(`/provider/${provider}`, {
+            totalLiquidity: totalLiquidityPerProvider[provider]
+          })
+        }
+      >
+        {provider}
+      </DataText>
+      <DataText fontWeight="500">{'$' + totalLiquidityPerProvider[provider].toFixed(2)}</DataText>
+    </DashGrid>
+  )
 
   return (
     <PageWrapper>
@@ -150,24 +152,17 @@ function ProvidersPage({ color = '#ff007a' }) {
         <Panel>
           <DashGrid>
             <Flex alignItems="center">
-              <ClickableText
-                color="textDim"
-              >
-                Provider
-              </ClickableText>
+              <ClickableText color="textDim">Provider</ClickableText>
             </Flex>
             <Flex alignItems="center">
-              <ClickableText
-                color="textDim">
-                Total provided USD$
-              </ClickableText>
+              <ClickableText color="textDim">Total provided USD$</ClickableText>
             </Flex>
           </DashGrid>
           <Divider />
           <List p={0}>
-            {Object.keys(providers).map((provider, idx) =>
+            {Object.keys(providers).map((provider, idx) => (
               <ListItem key={provider} provider={provider} />
-            )}
+            ))}
           </List>
         </Panel>
       </ContentWrapper>
