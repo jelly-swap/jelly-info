@@ -14,7 +14,7 @@ import { Divider } from '../components/'
 import { useProviders } from '../contexts/Providers'
 import { useAllTokens } from '../contexts/TokenData'
 
-import { formattedNum, safeAccess } from '../utils'
+import { calculateTotalUSD, formattedNum } from '../utils'
 
 const List = styled(Box)`
   -webkit-overflow-scrolling: touch;
@@ -88,23 +88,6 @@ const ClickableText = styled(Text)`
   }
 `
 
-const calculateTotalUSD = (providers, tokens) => {
-  const totalUSD = {}
-
-  Object.keys(providers).forEach(provider => {
-    const balances = safeAccess(providers, [provider, 'balances'])
-
-    totalUSD[provider] = 0
-
-    Object.keys(balances).forEach(asset => {
-      const token = tokens.find(t => t.symbol === asset)
-      totalUSD[provider] += Number(balances[asset].balance) * Number(token.priceUSD)
-    })
-  })
-
-  return totalUSD
-}
-
 function ProvidersPage({ color = '#ff007a' }) {
   const providers = useProviders()
   const tokens = useAllTokens()
@@ -130,11 +113,7 @@ function ProvidersPage({ color = '#ff007a' }) {
           cursor: 'pointer'
         }}
         color={color}
-        onClick={() =>
-          history.push(`/provider/${provider}`, {
-            totalLiquidity: totalLiquidityPerProvider[provider]
-          })
-        }
+        onClick={() => history.push(`/provider/${provider}`)}
       >
         {provider}
       </DataText>

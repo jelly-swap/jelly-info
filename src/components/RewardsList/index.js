@@ -110,11 +110,7 @@ function RewardsList({ rewards, color, itemMax = 20 }) {
         <DataText area="provider" fontWeight="500">
           <Link
             style={{ cursor: 'pointer' }}
-            onClick={() =>
-              history.push(`/provider/${item.name}`, {
-                totalLiquidity: item.usd
-              })
-            }
+            onClick={() => history.push(`/provider/${item.name}`)}
             color={color}
             external
           >

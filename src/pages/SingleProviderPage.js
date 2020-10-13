@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import { useMedia } from 'react-use'
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { transparentize } from 'polished'
 
 import { useProvider } from '../contexts/Providers'
@@ -19,8 +19,9 @@ import { TYPE, ThemedBackground } from '../Theme'
 
 import { ASSETS_MAP } from '../constants/assets'
 
-import { formatAddress, formatDate, formattedNum } from '../utils'
+import { calculateTotalUSD, formatAddress, formatDate, formattedNum } from '../utils'
 import TokenLogo from '../components/TokenLogo'
+import { useAllTokens } from '../contexts/TokenData'
 
 const MAX_ITEMS = 10
 const START_PAGE = 1
@@ -114,16 +115,17 @@ const TABLE_CONFIG = {
 }
 
 function SingleProviderPage({ color = '#ff007a' }) {
-  const { totalLiquidity } = useLocation().state
   const providerName = useParams().provider
   const provider = useProvider(providerName)
   const rewards = useRewards()
   const history = useHistory()
+  const tokens = useAllTokens()
 
   const [filteredRewards, setFilteredRewards] = useState([])
   const [filteredTransactions, setFilteredTransactions] = useState([])
   const [filteredBalances, setFilteredBalances] = useState([])
   const [filteredPairs, setFilteredPairs] = useState([])
+  const [totalLiquidity, setTotalLiquidity] = useState(0)
 
   const balancesArrRef = useRef([])
   const pairsArrRef = useRef([])
@@ -157,6 +159,16 @@ function SingleProviderPage({ color = '#ff007a' }) {
       }
     })
   }, [provider])
+
+  useEffect(() => {
+    if (!provider || !tokens) {
+      return
+    }
+
+    const total = calculateTotalUSD({ provider }, tokens)
+
+    setTotalLiquidity(total.provider)
+  }, [provider, tokens])
 
   const rewardsForProvider = useMemo(() => {
     if (!rewards) {

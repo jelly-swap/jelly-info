@@ -293,3 +293,22 @@ export function safeAccess(object, path) {
 }
 
 export const formatAddress = address => address.slice(0, 6) + '...' + address.slice(38, 42)
+
+export const calculateTotalUSD = (providers, tokens) => {
+  const totalUSD = {}
+
+  console.log(providers)
+
+  Object.keys(providers).forEach(provider => {
+    const balances = safeAccess(providers, [provider, 'balances'])
+
+    totalUSD[provider] = 0
+
+    Object.keys(balances).forEach(asset => {
+      const token = tokens.find(t => t.symbol === asset)
+      totalUSD[provider] += Number(balances[asset].balance) * Number(token.priceUSD)
+    })
+  })
+
+  return totalUSD
+}
