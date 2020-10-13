@@ -23,7 +23,7 @@ import { formatAddress, formatDate } from '../utils'
 const MAX_ITEMS = 10
 const START_PAGE = 1
 
-const TABLE_COLUMNS = {
+const TABLE_TITLES = {
   REWARDS: ['Liquidity', 'Reward', 'Date'],
   TRANSACTIONS(currentResolution) {
     if (currentResolution.below780) {
@@ -38,6 +38,23 @@ const TABLE_COLUMNS = {
   },
   BALANCES: ['Address', 'Balance'],
   PAIRS: ['Pair', 'Fee']
+}
+
+const TABLE_GRID_COLUMNS = {
+  REWARDS: '1fr 1fr 1fr',
+  TRANSACTIONS(currentResolution) {
+    if (currentResolution.below780) {
+      return '1.2fr 1fr 1fr'
+    }
+
+    if (currentResolution.below1080) {
+      return '1.2fr 1fr 1fr 1fr'
+    }
+
+    return '1.2fr 1fr 1fr 1fr 1fr 1fr 10px'
+  },
+  BALANCES: '1fr 1fr',
+  PAIRS: '1fr 1fr'
 }
 
 function SingleProviderPage({ color = '#ff007a' }) {
@@ -129,7 +146,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
         <SingleProviderContent
           title="Rewards"
-          columns={TABLE_COLUMNS.REWARDS}
+          columns={TABLE_TITLES.REWARDS}
           collection={rewardsForProvider}
           onPageChange={filterRewards}
           emptyListMessage="No rewards were found"
@@ -141,7 +158,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
         <SingleProviderContent
           title="Transactions"
-          columns={TABLE_COLUMNS.TRANSACTIONS({
+          columns={TABLE_TITLES.TRANSACTIONS({
             below780,
             below1080
           })}
@@ -149,7 +166,10 @@ function SingleProviderPage({ color = '#ff007a' }) {
           onPageChange={filterTransactions}
           emptyListMessage="No transactions were found"
           dashGridStyles={{
-            gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px'
+            gridTemplateColumns: TABLE_GRID_COLUMNS.TRANSACTIONS({
+              below780,
+              below1080
+            })
           }}
         >
           {filteredTransactions.map(transaction => (
@@ -170,7 +190,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
           onPageChange={filterBalances}
           emptyListMessage="No balances were found"
           dashGridStyles={{
-            gridTemplateColumns: '1fr 1fr'
+            gridTemplateColumns: TABLE_GRID_COLUMNS.BALANCES
           }}
         >
           {filteredBalances.map((balanceInfo, idx) => (
@@ -185,7 +205,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
           onPageChange={filterPairs}
           emptyListMessage="No pairs were found"
           dashGridStyles={{
-            gridTemplateColumns: '1fr 1fr'
+            gridTemplateColumns: TABLE_GRID_COLUMNS.PAIRS
           }}
         >
           {filteredPairs.map((pair, idx) => (
@@ -241,7 +261,15 @@ const PairsListItem = ({ pair, fee, color }) => {
 
 const TransactionListItem = ({ transaction, color, below780, below1080 }) => {
   return (
-    <DashGrid style={{ height: '48px', gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px' }}>
+    <DashGrid
+      style={{
+        height: '48px',
+        gridTemplateColumns: TABLE_GRID_COLUMNS.TRANSACTIONS({
+          below780,
+          below1080
+        })
+      }}
+    >
       <DataText area="txn" fontWeight="500">
         <Link
           color={color}
