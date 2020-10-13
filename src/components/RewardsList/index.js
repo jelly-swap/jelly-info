@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -86,8 +87,9 @@ function RewardsList({ rewards, color, itemMax = 20 }) {
   // sorting
   const [sortDirection, setSortDirection] = useState(true)
   const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.DATE)
+  const history = useHistory()
 
-  const { page, setPage, maxPage } = usePagination(rewards);
+  const { page, setPage, maxPage } = usePagination(rewards)
 
   const filteredList =
     rewards &&
@@ -105,7 +107,16 @@ function RewardsList({ rewards, color, itemMax = 20 }) {
     return (
       <DashGrid style={{ height: '48px' }}>
         <DataText area="provider" fontWeight="500">
-          <Link color={color} external>
+          <Link
+            style={{ cursor: 'pointer' }}
+            onClick={() =>
+              history.push(`/provider/${item.name}`, {
+                totalLiquidity: item.usd
+              })
+            }
+            color={color}
+            external
+          >
             {item.name}
           </Link>
         </DataText>
@@ -185,15 +196,15 @@ function RewardsList({ rewards, color, itemMax = 20 }) {
         ) : filteredList.length === 0 ? (
           <EmptyCard>No recent transactions found.</EmptyCard>
         ) : (
-              filteredList.map((item, index) => {
-                return (
-                  <div key={index}>
-                    <ListItem key={index} index={index + 1} item={item} />
-                    <Divider />
-                  </div>
-                )
-              })
-            )}
+          filteredList.map((item, index) => {
+            return (
+              <div key={index}>
+                <ListItem key={index} index={index + 1} item={item} />
+                <Divider />
+              </div>
+            )
+          })
+        )}
       </List>
       <PageButtons>
         <div
