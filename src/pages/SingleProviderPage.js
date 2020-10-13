@@ -40,44 +40,42 @@ const TABLE_CONFIG = {
       Date: 'date'
     }
   },
-  TRANSACTIONS(currentResolution) {
-    const DEFAULT_CONFIG = {
-      TITLE: 'Transactions',
-      EMPTY_LIST_MSG: 'No transactions were found',
-      PAGE: START_PAGE,
-      ORDER: 'desc',
-      COLUMN: 'expiration'
-    }
+  TRANSACTIONS: {
+    TITLE: 'Transactions',
+    EMPTY_LIST_MSG: 'No transactions were found',
+    PAGE: START_PAGE,
+    ORDER: 'desc',
+    GRID_TEMPLATE(currentResolution) {
+      if (currentResolution.below780) {
+        return '1.2fr 1fr 1fr'
+      }
 
-    if (currentResolution?.below780) {
-      return {
-        ...DEFAULT_CONFIG,
-        GRID_TEMPLATE: '1.2fr 1fr 1fr',
-        COLUMNS: {
+      if (currentResolution.below1080) {
+        return '1.2fr 1fr 1fr 1fr'
+      }
+
+      return '1.2fr 1fr 1fr 1fr 1fr 1fr 10px'
+    },
+    COLUMN: 'expiration',
+    COLUMNS(currentResolution) {
+      if (currentResolution.below780) {
+        return {
           Pair: undefined,
           Received: 'inputAmount',
           Expiration: 'expiration'
         }
       }
-    }
 
-    if (currentResolution?.below1080) {
-      return {
-        ...DEFAULT_CONFIG,
-        GRID_TEMPLATE: '1.2fr 1fr 1fr 1fr',
-        COLUMNS: {
+      if (currentResolution.below1080) {
+        return {
           Pair: undefined,
           Received: 'inputAmount',
           Sended: 'outputAmount',
           Expiration: 'expiration'
         }
       }
-    }
 
-    return {
-      ...DEFAULT_CONFIG,
-      GRID_TEMPLATE: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px',
-      COLUMNS: {
+      return {
         Pair: undefined,
         Received: 'inputAmount',
         Sended: 'outputAmount',
@@ -209,9 +207,9 @@ function SingleProviderPage({ color = '#ff007a' }) {
   const filterTransactions = page => {
     const { TRANSACTIONS } = TABLE_CONFIG
 
-    TRANSACTIONS().PAGE = page
+    TRANSACTIONS.PAGE = page
 
-    setFilteredTransactions(sortCollection(transactionsFromProvider, TRANSACTIONS().COLUMN, TRANSACTIONS().TITLE, page))
+    setFilteredTransactions(sortCollection(transactionsFromProvider, TRANSACTIONS.COLUMN, TRANSACTIONS.TITLE, page))
   }
 
   const filterBalances = page => {
@@ -247,18 +245,18 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
         setFilteredRewards(sortCollection(rewardsForProvider, column, table, rewardsPage))
         return
-      case TABLE_CONFIG.TRANSACTIONS().TITLE:
-        const transactionsPage = TABLE_CONFIG.TRANSACTIONS().PAGE
+      case TABLE_CONFIG.TRANSACTIONS.TITLE:
+        const transactionsPage = TABLE_CONFIG.TRANSACTIONS.PAGE
 
         setFilteredTransactions(sortCollection(transactionsFromProvider, column, table, transactionsPage))
         return
       case TABLE_CONFIG.BALANCES.TITLE:
-        const balancesPage = TABLE_CONFIG.TRANSACTIONS().PAGE
+        const balancesPage = TABLE_CONFIG.TRANSACTIONS.PAGE
 
         setFilteredBalances(sortCollection(balancesArrRef.current, column, table, balancesPage))
         return
       case TABLE_CONFIG.PAIRS.TITLE:
-        const pairsPage = TABLE_CONFIG.TRANSACTIONS().PAGE
+        const pairsPage = TABLE_CONFIG.TRANSACTIONS.PAGE
 
         setFilteredPairs(sortCollection(pairsArrRef.current, column, table, pairsPage))
         return
@@ -311,22 +309,20 @@ function SingleProviderPage({ color = '#ff007a' }) {
         </SingleProviderContent>
 
         <SingleProviderContent
-          title={TABLE_CONFIG.TRANSACTIONS().TITLE}
-          emptyListMessage={TABLE_CONFIG.TRANSACTIONS().EMPTY_LIST_MSG}
-          columns={
-            TABLE_CONFIG.TRANSACTIONS({
-              below780,
-              below1080
-            }).COLUMNS
-          }
+          title={TABLE_CONFIG.TRANSACTIONS.TITLE}
+          emptyListMessage={TABLE_CONFIG.TRANSACTIONS.EMPTY_LIST_MSG}
+          columns={TABLE_CONFIG.TRANSACTIONS.COLUMNS({
+            below780,
+            below1080
+          })}
           collection={transactionsFromProvider}
           dashGridStyles={{
-            gridTemplateColumns: TABLE_CONFIG.TRANSACTIONS({
+            gridTemplateColumns: TABLE_CONFIG.TRANSACTIONS.GRID_TEMPLATE({
               below780,
               below1080
-            }).GRID_TEMPLATE
+            })
           }}
-          metaData={TABLE_CONFIG.TRANSACTIONS()}
+          metaData={TABLE_CONFIG.TRANSACTIONS}
           onPageChange={filterTransactions}
           sortColumn={sortColumn}
         >
@@ -441,10 +437,10 @@ const TransactionListItem = ({ transaction, color, below780, below1080 }) => {
     <DashGrid
       style={{
         height: '48px',
-        gridTemplateColumns: TABLE_CONFIG.TRANSACTIONS({
+        gridTemplateColumns: TABLE_CONFIG.TRANSACTIONS.GRID_TEMPLATE({
           below780,
           below1080
-        }).GRID_TEMPLATE
+        })
       }}
     >
       <DataText area="txn" fontWeight="500">
