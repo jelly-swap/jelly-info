@@ -323,15 +323,15 @@ function TxnList({ history, color }) {
         ) : filteredList.length === 0 ? (
           <EmptyCard>No recent transactions found.</EmptyCard>
         ) : (
-              filteredList.map((item, index) => {
-                return (
-                  <div key={index} onClick={() => expandTransaction(item, index)}>
-                    <ListItem key={index} index={index + 1} item={item} />
-                    <Divider />
-                  </div>
-                )
-              })
-            )}
+          filteredList.map((item, index) => {
+            return (
+              <div key={index} onClick={() => expandTransaction(item, index)}>
+                <ListItem key={index} index={index + 1} item={item} />
+                <Divider />
+              </div>
+            )
+          })
+        )}
       </List>
       <PageButtons>
         <div
