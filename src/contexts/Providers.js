@@ -81,6 +81,11 @@ export function useProviders() {
   return safeAccess(state, ['providers'])
 }
 
+export function useProvider(name) {
+  const { state } = usePriceContext()
+  return safeAccess(state, ['providers', name])
+}
+
 const getProviders = async () => {
   try {
     const res = await axios.get(`https://network.jelly.market/api/v1/info/get`)

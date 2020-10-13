@@ -6,7 +6,7 @@ import { BasicLink } from '../Link'
 import { useMedia } from 'react-use'
 import { transparentize } from 'polished'
 import { withRouter } from 'react-router-dom'
-import { TrendingUp, Disc, Framer } from 'react-feather'
+import { TrendingUp, Disc, Framer, Monitor } from 'react-feather'
 import Link from '../Link'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
 import Toggle from '../Toggle'
@@ -108,6 +108,12 @@ function SideNav({ history }) {
                   <Option activeText={history.location.pathname === '/rewards' ?? undefined}>
                     <Framer size={20} style={{ marginRight: '.75rem' }} />
                     Rewards
+                  </Option>
+                </BasicLink>
+                <BasicLink to="/providers">
+                  <Option activeText={history.location.pathname === '/providers' ?? undefined}>
+                    <Monitor size={20} style={{ marginRight: '.75rem' }} />
+                    Providers
                   </Option>
                 </BasicLink>
               </AutoColumn>

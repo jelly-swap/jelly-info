@@ -13,6 +13,8 @@ import { useAllPrices } from './contexts/Price'
 import RewardsPage from './pages/RewardsPage'
 import { useTotalLiquidity } from './contexts/TokenData'
 import { useRewards } from './contexts/Rewards'
+import ProvidersPage from './pages/ProvidersPage'
+import SingleProviderPage from './pages/SingleProviderPage'
 
 const AppWrapper = styled.div`
   position: relative;
@@ -67,50 +69,62 @@ function App() {
   return (
     <AppWrapper>
       {rewards &&
-      totalLiquidity &&
-      liquidityData &&
-      prices &&
-      globalChartData &&
-      Object.keys(globalChartData).length > 0 ? (
-        <BrowserRouter>
-          <Switch>
-            <Route
-              exacts
-              strict
-              path="/asset/:asset"
-              render={({ match }) => {
-                return (
-                  <LayoutWrapper>
-                    <TokenPage asset={match.params.asset} />
-                  </LayoutWrapper>
-                )
-              }}
-            />
+        totalLiquidity &&
+        liquidityData &&
+        prices &&
+        globalChartData &&
+        Object.keys(globalChartData).length > 0 ? (
+          <BrowserRouter>
+            <Switch>
+              <Route
+                exacts
+                strict
+                path="/asset/:asset"
+                render={({ match }) => {
+                  return (
+                    <LayoutWrapper>
+                      <TokenPage asset={match.params.asset} />
+                    </LayoutWrapper>
+                  )
+                }}
+              />
 
-            <Route path="/home">
-              <LayoutWrapper>
-                <GlobalPage />
-              </LayoutWrapper>
-            </Route>
+              <Route path="/home">
+                <LayoutWrapper>
+                  <GlobalPage />
+                </LayoutWrapper>
+              </Route>
 
-            <Route path="/assets">
-              <LayoutWrapper>
-                <AllTokensPage />
-              </LayoutWrapper>
-            </Route>
+              <Route path="/assets">
+                <LayoutWrapper>
+                  <AllTokensPage />
+                </LayoutWrapper>
+              </Route>
 
-            <Route path="/rewards">
-              <LayoutWrapper>
-                <RewardsPage />
-              </LayoutWrapper>
-            </Route>
+              <Route path="/rewards">
+                <LayoutWrapper>
+                  <RewardsPage />
+                </LayoutWrapper>
+              </Route>
 
-            <Redirect to="/home" />
-          </Switch>
-        </BrowserRouter>
-      ) : (
-        <LocalLoader fill="true" />
-      )}
+              <Route path="/providers">
+                <LayoutWrapper>
+                  <ProvidersPage />
+                </LayoutWrapper>
+              </Route>
+
+              <Route path="/provider/:provider">
+                <LayoutWrapper>
+                  <SingleProviderPage />
+                </LayoutWrapper>
+              </Route>
+
+              <Redirect to="/home" />
+            </Switch>
+          </BrowserRouter>
+        ) : (
+          <LocalLoader fill="true" />
+        )}
     </AppWrapper>
   )
 }
