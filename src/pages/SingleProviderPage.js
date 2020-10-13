@@ -102,11 +102,12 @@ const TABLE_CONFIG = {
     EMPTY_LIST_MSG: 'No pairs were found',
     PAGE: START_PAGE,
     ORDER: 'desc',
-    GRID_TEMPLATE: '2fr 1fr',
-    COLUMN: 'fee',
+    GRID_TEMPLATE: '2fr 1fr 1fr',
+    COLUMN: 'price',
     COLUMNS: {
       Pair: 'pair',
-      Fee: 'fee'
+      Fee: 'fee',
+      Price: 'price'
     }
   }
 }
@@ -146,10 +147,12 @@ function SingleProviderPage({ color = '#ff007a' }) {
     })
 
     pairsArrRef.current = Object.keys(pairs).map(asset => {
-      const { FEE } = pairs[asset]
+      const { FEE, PRICE } = pairs[asset]
+
       return {
         asset,
-        fee: FEE
+        fee: (Number(FEE) * 100).toFixed(2),
+        price: PRICE || 0
       }
     })
   }, [provider])
@@ -170,7 +173,9 @@ function SingleProviderPage({ color = '#ff007a' }) {
     }
 
     const transactions = history.filter(entity =>
-      Object.values(provider.addresses).includes(entity.sender || entity.receiver)
+      Object.values(provider.addresses)
+        .map(addr => addr.toLowerCase())
+        .includes(entity.sender.toLowerCase() || entity.receiver.toLowerCase())
     )
 
     return transactions
@@ -397,6 +402,8 @@ const PairsListItem = ({ pair, color }) => {
       <DataText fontWeight="500">{pair.asset}</DataText>
 
       <DataText fontWeight="500">{pair.fee} %</DataText>
+
+      <DataText fontWeight="500">{pair.price}</DataText>
     </DashGrid>
   )
 }
