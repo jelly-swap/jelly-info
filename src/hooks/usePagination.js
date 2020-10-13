@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react'
 
 export const usePagination = (collection, itemsMax = 10) => {
   const [maxPage, setMaxPage] = useState(1)
-  const [page, setPage] = useState(1);
-
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     let extraPages = 1
