@@ -1,28 +1,27 @@
-import React, { useMemo, useState } from 'react';
-import { useMedia } from 'react-use';
-import { useParams, useLocation } from 'react-router-dom';
+import React, { useMemo, useState } from 'react'
+import { useMedia } from 'react-use'
+import { useParams, useLocation } from 'react-router-dom'
 import { transparentize } from 'polished'
 
-import { useProvider } from '../contexts/Providers';
-import { useRewards } from '../contexts/Rewards';
-import { useHistory } from '../contexts/History';
+import { useProvider } from '../contexts/Providers'
+import { useRewards } from '../contexts/Rewards'
+import { useHistory } from '../contexts/History'
 
 import LocalLoader from '../components/LocalLoader'
-import Pagination from '../components/common/Pagination';
-import FormattedName from '../components/FormattedName';
-import SingleProviderContent from '../components/SingleProviderContent';
-import Link from '../components/Link';
-import { DashGrid, DataText } from '../components/common';
+import FormattedName from '../components/FormattedName'
+import SingleProviderContent from '../components/SingleProviderContent'
+import Link from '../components/Link'
+import { DashGrid, DataText } from '../components/common'
 import { PageWrapper, ContentWrapper } from '../components'
 import { RowBetween } from '../components/Row'
 import { TYPE, ThemedBackground } from '../Theme'
 
-import { ASSETS_MAP } from '../constants/assets';
+import { ASSETS_MAP } from '../constants/assets'
 
-import { formatAddress, formatDate } from '../utils';
+import { formatAddress, formatDate } from '../utils'
 
-const MAX_ITEMS = 10;
-const START_PAGE = 1;
+const MAX_ITEMS = 10
+const START_PAGE = 1
 
 function SingleProviderPage({ color = '#ff007a' }) {
   const { totalLiquidity } = useLocation().state
@@ -46,7 +45,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
     const LPRewards = rewards?.filter(entity => entity.name === providerName)
 
-    setFilteredTransactions(LPRewards.slice(MAX_ITEMS * (START_PAGE - START_PAGE), START_PAGE * MAX_ITEMS))
+    setFilteredRewards(LPRewards.slice(MAX_ITEMS * (START_PAGE - START_PAGE), START_PAGE * MAX_ITEMS))
 
     return LPRewards
   }, [rewards, providerName])
@@ -56,7 +55,9 @@ function SingleProviderPage({ color = '#ff007a' }) {
       return
     }
 
-    const transactions = history.filter(entity => Object.values(provider.addresses).includes(entity.sender || entity.receiver))
+    const transactions = history.filter(entity =>
+      Object.values(provider.addresses).includes(entity.sender || entity.receiver)
+    )
 
     setFilteredTransactions(transactions.slice(MAX_ITEMS * (START_PAGE - START_PAGE), START_PAGE * MAX_ITEMS))
 
@@ -67,26 +68,20 @@ function SingleProviderPage({ color = '#ff007a' }) {
     return <LocalLoader fill="true" />
   }
 
-  const { balances, pairs } = provider;
+  const { balances, pairs } = provider
 
-  const EarningsListItem = ({ reward }) => {
+  const RewardsListItem = ({ reward }) => {
     return (
       <DashGrid style={{ height: '48px' }}>
-        <DataText fontWeight="500">
-          {'$' + reward.usd.toFixed(2)}
-        </DataText>
-        <DataText fontWeight="500">
-          {'$' + reward.reward.toFixed(2)}
-        </DataText>
-        <DataText fontWeight="500">
-          {reward.date}
-        </DataText>
+        <DataText fontWeight="500">{'$' + reward.usd.toFixed(2)}</DataText>
+        <DataText fontWeight="500">{'$' + reward.reward.toFixed(2)}</DataText>
+        <DataText fontWeight="500">{reward.date}</DataText>
       </DashGrid>
     )
   }
 
   const BalancesListItem = ({ balanceInfo }) => {
-    const { address, balance, asset } = balanceInfo;
+    const { address, balance, asset } = balanceInfo
 
     const explorer = ASSETS_MAP[asset].addressExplorer
 
@@ -99,7 +94,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
         </DataText>
 
         <DataText fontWeight="500">
-          {balance} {asset}
+          {Number(balance).toFixed(5)} {asset}
         </DataText>
       </DashGrid>
     )
@@ -108,22 +103,22 @@ function SingleProviderPage({ color = '#ff007a' }) {
   const PairsListItem = ({ pair, fee }) => {
     return (
       <DashGrid style={{ height: '48px', gridTemplateColumns: '2fr 1fr' }}>
-        <DataText fontWeight="500">
-          {pair}
-        </DataText>
+        <DataText fontWeight="500">{pair}</DataText>
 
-        <DataText fontWeight="500">
-          {fee} %
-        </DataText>
+        <DataText fontWeight="500">{fee} %</DataText>
       </DashGrid>
     )
   }
 
   const TransactionListItem = ({ transaction }) => {
     return (
-      <DashGrid style={{ height: '48px', gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px' }} >
+      <DashGrid style={{ height: '48px', gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px' }}>
         <DataText area="txn" fontWeight="500">
-          <Link color={color} external href={`${ASSETS_MAP[transaction.network].txExplorer}${transaction.transactionHash}`}>
+          <Link
+            color={color}
+            external
+            href={`${ASSETS_MAP[transaction.network].txExplorer}${transaction.transactionHash}`}
+          >
             {`Swap ${transaction.network} for ${transaction.outputNetwork}`}
           </Link>
         </DataText>
@@ -142,7 +137,11 @@ function SingleProviderPage({ color = '#ff007a' }) {
         {!below1080 && (
           <>
             <DataText area="from">
-              <Link color={color} external href={`${ASSETS_MAP[transaction.network].addressExplorer}${transaction.sender}`}>
+              <Link
+                color={color}
+                external
+                href={`${ASSETS_MAP[transaction.network].addressExplorer}${transaction.sender}`}
+              >
                 {transaction.sender && formatAddress(transaction.sender)}
               </Link>
             </DataText>
@@ -166,77 +165,102 @@ function SingleProviderPage({ color = '#ff007a' }) {
     )
   }
 
-  const filterRewards = (page) => {
+  const filterRewards = page => {
     setFilteredRewards(rewardsForProvider.slice(MAX_ITEMS * (page - START_PAGE), page * MAX_ITEMS))
   }
 
-  const filterTransactions = (page) => {
+  const filterTransactions = page => {
     setFilteredTransactions(transactionsFromProvider.slice(MAX_ITEMS * (page - START_PAGE), page * MAX_ITEMS))
   }
 
-  const filterBalances = (page) => {
-    setFilteredBalances(Object.keys(balances).slice(MAX_ITEMS * (page - START_PAGE), page * MAX_ITEMS).map(asset => {
-      return {
-        asset,
-        address: balances[asset].address,
-        balance: balances[asset].balance
-      }
-    }))
+  const filterBalances = page => {
+    setFilteredBalances(
+      Object.keys(balances)
+        .slice(MAX_ITEMS * (page - START_PAGE), page * MAX_ITEMS)
+        .map(asset => {
+          return {
+            asset,
+            address: balances[asset].address,
+            balance: balances[asset].balance
+          }
+        })
+    )
   }
 
-  const filterPairs = (page) => {
+  const filterPairs = page => {
     setFilteredPairs(Object.keys(pairs).slice(MAX_ITEMS * (page - START_PAGE), page * MAX_ITEMS))
   }
 
   return (
     <PageWrapper>
-
       <ThemedBackground backgroundColor={transparentize(0.6, '#ff007a')} />
 
       <ContentWrapper>
-
         <RowBetween mt={40} mb={'1rem'}>
           <TYPE.main fontSize={'1.125rem'}>{providerName}</TYPE.main> <div />
         </RowBetween>
 
         <RowBetween mt={0} mb={'1rem'}>
-          <TYPE.main fontSize={'1.125rem'}>Total Provided Liquidity - {totalLiquidity.toFixed(2)} USD</TYPE.main> <div />
+          <TYPE.main fontSize={'1.125rem'}>Total Provided Liquidity - {totalLiquidity.toFixed(2)} USD</TYPE.main>{' '}
+          <div />
         </RowBetween>
 
-        <SingleProviderContent title='Earnings' columns={['Liquidity', 'Reward', 'Date']}>
-          {filteredRewards.map((reward) =>
-            <EarningsListItem key={reward.date} reward={reward} />
-          )}
+        <SingleProviderContent
+          title="Rewards"
+          columns={['Liquidity', 'Reward', 'Date']}
+          collection={rewardsForProvider}
+          onPageChange={filterRewards}
+          emptyListMessage="No rewards were found"
+        >
+          {filteredRewards.map(reward => (
+            <RewardsListItem key={reward.date} reward={reward} />
+          ))}
         </SingleProviderContent>
-        <Pagination collection={rewardsForProvider} onPageChange={filterRewards} />
 
-        <SingleProviderContent title='Transactions' columns={['Pair', 'Coin Amount', 'Coin Amount', 'From', 'To', 'Expiration']} dashGridStyles={{
-          gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px'
-        }}>
-          {filteredTransactions.map((transaction =>
+        <SingleProviderContent
+          title="Transactions"
+          columns={['Pair', 'Coin Amount', 'Coin Amount', 'From', 'To', 'Expiration']}
+          collection={transactionsFromProvider}
+          onPageChange={filterTransactions}
+          emptyListMessage="No transactions were found"
+          dashGridStyles={{
+            gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr 1fr 10px'
+          }}
+        >
+          {filteredTransactions.map(transaction => (
             <TransactionListItem key={transaction.id} transaction={transaction} />
           ))}
         </SingleProviderContent>
-        <Pagination collection={transactionsFromProvider} onPageChange={filterTransactions} />
 
-        <SingleProviderContent title='Balance' columns={['Address', 'Balance']} dashGridStyles={{
-          gridTemplateColumns: '1fr 1fr'
-        }}>
-          {filteredBalances.map((balanceInfo, idx) =>
+        <SingleProviderContent
+          title="Balances"
+          columns={['Address', 'Balance']}
+          collection={balances}
+          onPageChange={filterBalances}
+          emptyListMessage="No balances were found"
+          dashGridStyles={{
+            gridTemplateColumns: '1fr 1fr'
+          }}
+        >
+          {filteredBalances.map((balanceInfo, idx) => (
             <BalancesListItem key={idx} balanceInfo={balanceInfo} />
-          )}
+          ))}
         </SingleProviderContent>
-        <Pagination collection={Object.keys(balances)} onPageChange={filterBalances} />
 
-        <SingleProviderContent title='Supported Pairs' columns={['Pair', 'Fee']} dashGridStyles={{
-          gridTemplateColumns: '1fr 1fr'
-        }}>
-          {filteredPairs.map((pair, idx) =>
+        <SingleProviderContent
+          title="Supported Pairs"
+          columns={['Pair', 'Fee']}
+          collection={pairs}
+          onPageChange={filterPairs}
+          emptyListMessage="No pairs were found"
+          dashGridStyles={{
+            gridTemplateColumns: '1fr 1fr'
+          }}
+        >
+          {filteredPairs.map((pair, idx) => (
             <PairsListItem key={idx} fee={pairs[pair].FEE} pair={pair} />
-          )}
+          ))}
         </SingleProviderContent>
-        <Pagination collection={Object.keys(pairs)} onPageChange={filterPairs} />
-
       </ContentWrapper>
     </PageWrapper>
   )
