@@ -19,7 +19,8 @@ import { TYPE, ThemedBackground } from '../Theme'
 
 import { ASSETS_MAP } from '../constants/assets'
 
-import { formatAddress, formatDate } from '../utils'
+import { formatAddress, formatDate, formattedNum } from '../utils'
+import TokenLogo from '../components/TokenLogo'
 
 const MAX_ITEMS = 10
 const START_PAGE = 1
@@ -135,7 +136,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
       return
     }
 
-    const { balances, pairs } = provider
+    const { balances, pairs, prices } = provider
 
     balancesArrRef.current = Object.keys(balances).map(asset => {
       const { address, balance } = balances[asset]
@@ -151,8 +152,8 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
       return {
         asset,
-        fee: (Number(FEE) * 100).toFixed(2),
-        price: PRICE || 'N/A'
+        fee: Number(FEE) * 100,
+        price: PRICE || prices[asset] || 'N/A'
       }
     })
   }, [provider])
@@ -277,7 +278,9 @@ function SingleProviderPage({ color = '#ff007a' }) {
         </RowBetween>
 
         <RowBetween mt={0} mb={'1rem'}>
-          <TYPE.main fontSize={'1.125rem'}>Total Provided Liquidity - {totalLiquidity.toFixed(2)} USD</TYPE.main>{' '}
+          <TYPE.main fontSize={'1.125rem'}>
+            Total Provided Liquidity - {formattedNum(totalLiquidity, true)} USD
+          </TYPE.main>{' '}
           <div />
         </RowBetween>
 
@@ -369,8 +372,8 @@ export default SingleProviderPage
 const RewardsListItem = ({ reward, color }) => {
   return (
     <DashGrid style={{ height: '48px' }}>
-      <DataText fontWeight="500">{'$' + reward.usd.toFixed(2)}</DataText>
-      <DataText fontWeight="500">{'$' + reward.reward.toFixed(2)}</DataText>
+      <DataText fontWeight="500">{formattedNum(reward.usd, true)}</DataText>
+      <DataText fontWeight="500">{formattedNum(reward.reward, true)}</DataText>
       <DataText fontWeight="500">{reward.date}</DataText>
     </DashGrid>
   )
@@ -390,20 +393,33 @@ const BalancesListItem = ({ balanceInfo, color }) => {
       </DataText>
 
       <DataText fontWeight="500">
-        {Number(balance).toFixed(5)} {asset}
+        {formattedNum(balance)} {asset}
       </DataText>
     </DashGrid>
   )
 }
 
 const PairsListItem = ({ pair, color }) => {
+  const [firstAsset, secondAsset] = pair.asset.split('-')
   return (
     <DashGrid style={{ height: '48px', gridTemplateColumns: TABLE_CONFIG.PAIRS.GRID_TEMPLATE }}>
       <DataText fontWeight="500">{pair.asset}</DataText>
 
-      <DataText fontWeight="500">{pair.fee} %</DataText>
+      <DataText fontWeight="500">{formattedNum(pair.fee)} %</DataText>
 
-      <DataText fontWeight="500">{pair.price}</DataText>
+      <DataText fontWeight="500">
+        {pair.price === 'N/A' ? (
+          'N/A'
+        ) : (
+          <>
+            <p style={{ marginRight: '10px' }}>1</p>
+            <TokenLogo token={firstAsset} />
+            <p style={{ margin: '0 10px' }}>=</p>
+            <p style={{ marginRight: '10px' }}>{formattedNum(Number(pair.price))}</p>
+            <TokenLogo token={secondAsset} />
+          </>
+        )}
+      </DataText>
     </DashGrid>
   )
 }
