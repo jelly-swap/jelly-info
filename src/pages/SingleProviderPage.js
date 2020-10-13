@@ -53,8 +53,8 @@ const TABLE_GRID_COLUMNS = {
 
     return '1.2fr 1fr 1fr 1fr 1fr 1fr 10px'
   },
-  BALANCES: '1fr 1fr',
-  PAIRS: '1fr 1fr'
+  BALANCES: '2fr 1fr',
+  PAIRS: '2fr 1fr'
 }
 
 function SingleProviderPage({ color = '#ff007a' }) {
@@ -117,10 +117,11 @@ function SingleProviderPage({ color = '#ff007a' }) {
       Object.keys(balances)
         .slice(MAX_ITEMS * (page - START_PAGE), page * MAX_ITEMS)
         .map(asset => {
+          const { address, balance } = balances[asset]
           return {
             asset,
-            address: balances[asset].address,
-            balance: balances[asset].balance
+            address,
+            balance
           }
         })
     )
@@ -185,7 +186,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
         <SingleProviderContent
           title="Balances"
-          columns={['Address', 'Balance']}
+          columns={TABLE_TITLES.BALANCES}
           collection={balances}
           onPageChange={filterBalances}
           emptyListMessage="No balances were found"
@@ -200,7 +201,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
         <SingleProviderContent
           title="Supported Pairs"
-          columns={['Pair', 'Fee']}
+          columns={TABLE_TITLES.PAIRS}
           collection={pairs}
           onPageChange={filterPairs}
           emptyListMessage="No pairs were found"
@@ -235,7 +236,7 @@ const BalancesListItem = ({ balanceInfo, color }) => {
   const explorer = ASSETS_MAP[asset].addressExplorer
 
   return (
-    <DashGrid style={{ height: '48px', gridTemplateColumns: '2fr 1fr' }}>
+    <DashGrid style={{ height: '48px', gridTemplateColumns: TABLE_GRID_COLUMNS.BALANCES }}>
       <DataText fontWeight="500">
         <Link color={color} external href={`${explorer}${address}`}>
           {address}
@@ -251,7 +252,7 @@ const BalancesListItem = ({ balanceInfo, color }) => {
 
 const PairsListItem = ({ pair, fee, color }) => {
   return (
-    <DashGrid style={{ height: '48px', gridTemplateColumns: '2fr 1fr' }}>
+    <DashGrid style={{ height: '48px', gridTemplateColumns: TABLE_GRID_COLUMNS.PAIRS }}>
       <DataText fontWeight="500">{pair}</DataText>
 
       <DataText fontWeight="500">{fee} %</DataText>
