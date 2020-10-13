@@ -185,17 +185,13 @@ function SingleProviderPage({ color = '#ff007a' }) {
   }
 
   const filterRewards = page => {
-    const { REWARDS } = TABLE_CONFIG
-
-    REWARDS.PAGE = page
+    TABLE_CONFIG.REWARDS.PAGE = page
 
     setFilteredRewards(sortCollection(rewardsForProvider, REWARDS.COLUMN, 'Rewards', page))
   }
 
   const filterTransactions = page => {
-    const { TRANSACTIONS } = TABLE_CONFIG
-
-    TRANSACTIONS().PAGE = page
+    TABLE_CONFIG.TRANSACTIONS().PAGE = page
 
     setFilteredTransactions(sortCollection(transactionsFromProvider, TRANSACTIONS().COLUMN, 'Transactions', page))
   }
