@@ -297,8 +297,6 @@ export const formatAddress = address => address.slice(0, 6) + '...' + address.sl
 export const calculateTotalUSD = (providers, tokens) => {
   const totalUSD = {}
 
-  console.log(providers)
-
   Object.keys(providers).forEach(provider => {
     const balances = safeAccess(providers, [provider, 'balances'])
 
