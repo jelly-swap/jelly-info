@@ -8,8 +8,20 @@ import { Divider, EmptyCard } from '../../components/'
 import { RowBetween } from '../Row'
 import { TYPE } from '../../Theme'
 
-export default ({ title, columns, collection, onPageChange, emptyListMessage, children, dashGridStyles }) => {
+export default ({
+  title,
+  columns,
+  sortColumn,
+  collection,
+  onPageChange,
+  emptyListMessage,
+  children,
+  dashGridStyles,
+  metaData
+}) => {
   const _collection = useMemo(() => (!Array.isArray(collection) ? Object.keys(collection) : collection), [collection])
+
+  const { COLUMN, ORDER } = metaData
 
   return (
     <>
@@ -25,9 +37,20 @@ export default ({ title, columns, collection, onPageChange, emptyListMessage, ch
               paddingBottom: '20px'
             }}
           >
-            {columns.map((column, idx) => (
-              <Flex key={idx} alignItems="center">
-                <DataText color="textDim">{column}</DataText>
+            {Object.keys(columns).map((column, idx) => (
+              <Flex
+                key={idx}
+                alignItems="center"
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  sortColumn(columns[column], title)
+                }}
+              >
+                <DataText color="textDim">
+                  {column}
+
+                  {COLUMN === columns[column] ? (ORDER === 'asc' ? '↑' : '↓') : ''}
+                </DataText>
               </Flex>
             ))}
           </DashGrid>

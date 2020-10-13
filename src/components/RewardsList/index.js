@@ -97,6 +97,7 @@ function RewardsList({ rewards, color, itemMax = 20 }) {
       .sort((a, b) => {
         const sortA = sortedColumn === SORT_FIELD.DATE ? dayjs(a[sortedColumn]).valueOf() : a[sortedColumn]
         const sortB = sortedColumn === SORT_FIELD.DATE ? dayjs(b[sortedColumn]).valueOf() : b[sortedColumn]
+
         return parseFloat(sortA) > parseFloat(sortB) ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
       })
       .slice(itemMax * (page - 1), page * itemMax)
