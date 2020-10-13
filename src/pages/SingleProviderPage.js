@@ -14,7 +14,7 @@ import SingleProviderContent from '../components/SingleProviderContent'
 import Link from '../components/Link'
 import { DashGrid, DataText } from '../components/common'
 import { PageWrapper, ContentWrapper } from '../components'
-import { RowBetween } from '../components/Row'
+import { RowBetween, RowFixed } from '../components/Row'
 import { TYPE, ThemedBackground } from '../Theme'
 
 import { ASSETS_MAP } from '../constants/assets'
@@ -274,15 +274,15 @@ function SingleProviderPage({ color = '#ff007a' }) {
 
       <ContentWrapper>
         <RowBetween mt={40} mb={'1rem'}>
-          <TYPE.main fontSize={'1.125rem'}>{providerName}</TYPE.main> <div />
+          <TYPE.main fontSize={'1.125rem'}>{providerName}</TYPE.main>
         </RowBetween>
 
-        <RowBetween mt={0} mb={'1rem'}>
-          <TYPE.main fontSize={'1.125rem'}>
-            Total Provided Liquidity - {formattedNum(totalLiquidity, true)} USD
-          </TYPE.main>{' '}
-          <div />
-        </RowBetween>
+        <RowFixed mt={0} mb={0}>
+          <TYPE.main fontSize={'1.125rem'} marginRight={'0.5rem'}>
+            Total Provided Liquidity{' '}
+          </TYPE.main>
+          <TYPE.header fontSize={'1.5rem'}>{formattedNum(totalLiquidity, true)}</TYPE.header>
+        </RowFixed>
 
         <SingleProviderContent
           title={TABLE_CONFIG.REWARDS.TITLE}

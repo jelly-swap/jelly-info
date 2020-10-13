@@ -14,7 +14,7 @@ import { Divider } from '../components/'
 import { useProviders } from '../contexts/Providers'
 import { useAllTokens } from '../contexts/TokenData'
 
-import { safeAccess } from '../utils'
+import { formattedNum, safeAccess } from '../utils'
 
 const List = styled(Box)`
   -webkit-overflow-scrolling: touch;
@@ -138,7 +138,7 @@ function ProvidersPage({ color = '#ff007a' }) {
       >
         {provider}
       </DataText>
-      <DataText fontWeight="500">{'$' + totalLiquidityPerProvider[provider].toFixed(2)}</DataText>
+      <DataText fontWeight="500">{formattedNum(totalLiquidityPerProvider[provider], true)}</DataText>
     </DashGrid>
   )
 
@@ -155,7 +155,7 @@ function ProvidersPage({ color = '#ff007a' }) {
               <ClickableText color="textDim">Provider</ClickableText>
             </Flex>
             <Flex alignItems="center">
-              <ClickableText color="textDim">Total provided USD$</ClickableText>
+              <ClickableText color="textDim">Total provided</ClickableText>
             </Flex>
           </DashGrid>
           <Divider />
