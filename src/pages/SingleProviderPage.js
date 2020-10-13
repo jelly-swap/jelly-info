@@ -185,27 +185,35 @@ function SingleProviderPage({ color = '#ff007a' }) {
   }
 
   const filterRewards = page => {
+    const { REWARDS } = TABLE_CONFIG
+
     TABLE_CONFIG.REWARDS.PAGE = page
 
-    setFilteredRewards(sortCollection(rewardsForProvider, REWARDS.COLUMN, 'Rewards', page))
+    setFilteredRewards(sortCollection(rewardsForProvider, REWARDS.COLUMN, REWARDS.TITLE, page))
   }
 
   const filterTransactions = page => {
-    TABLE_CONFIG.TRANSACTIONS().PAGE = page
+    const { TRANSACTIONS } = TABLE_CONFIG
 
-    setFilteredTransactions(sortCollection(transactionsFromProvider, TRANSACTIONS().COLUMN, 'Transactions', page))
+    TRANSACTIONS().PAGE = page
+
+    setFilteredTransactions(sortCollection(transactionsFromProvider, TRANSACTIONS().COLUMN, TRANSACTIONS().TITLE, page))
   }
 
   const filterBalances = page => {
-    TABLE_CONFIG.BALANCES.PAGE = page
+    const { BALANCES } = TABLE_CONFIG
 
-    setFilteredBalances(sortCollection(balancesArrRef.current, TABLE_CONFIG.BALANCES.COLUMN, 'Balances', page))
+    BALANCES.PAGE = page
+
+    setFilteredBalances(sortCollection(balancesArrRef.current, BALANCES.COLUMN, BALANCES.TITLE, page))
   }
 
   const filterPairs = page => {
-    TABLE_CONFIG.PAIRS.PAGE = page
+    const { PAIRS } = TABLE_CONFIG
 
-    setFilteredPairs(sortCollection(pairsArrRef.current, TABLE_CONFIG.PAIRS.COLUMN, 'Pairs', page))
+    PAIRS.PAGE = page
+
+    setFilteredPairs(sortCollection(pairsArrRef.current, PAIRS.COLUMN, PAIRS.TITLE, page))
   }
 
   const sortColumn = (column, table) => {
