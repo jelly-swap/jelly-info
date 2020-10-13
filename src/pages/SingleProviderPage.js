@@ -152,7 +152,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
       return {
         asset,
         fee: (Number(FEE) * 100).toFixed(2),
-        price: PRICE || 0
+        price: PRICE || 'N/A'
       }
     })
   }, [provider])
