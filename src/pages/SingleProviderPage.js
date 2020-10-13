@@ -159,7 +159,7 @@ function SingleProviderPage({ color = '#ff007a' }) {
       return
     }
 
-    const LPRewards = rewards?.filter(entity => entity.name === providerName)
+    const LPRewards = rewards.filter(entity => entity.name === providerName)
 
     setFilteredRewards(LPRewards.slice(MAX_ITEMS * (START_PAGE - START_PAGE), START_PAGE * MAX_ITEMS))
 
