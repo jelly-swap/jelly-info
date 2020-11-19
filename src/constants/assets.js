@@ -94,6 +94,14 @@ export const ASSETS_MAP = {
     decimals: 18,
     txExplorer: 'https://etherscan.io/tx/',
     addressExplorer: 'https://etherscan.io/address/'
+  },
+
+  CAPT: {
+    name: 'Captain Bitcoin',
+    symbol: 'CAPT',
+    decimals: 18,
+    txExplorer: 'https://etherscan.io/tx/',
+    addressExplorer: 'https://etherscan.io/address/'
   }
 }
 
