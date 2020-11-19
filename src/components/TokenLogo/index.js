@@ -15,13 +15,17 @@ const Image = styled.img`
   height: ${({ size }) => size};
 `
 
+const logos = {
+  CAPT: require('../../assets/tokens/CAPT.png')
+}
+
 export default function TokenLogo({ token, header = false, size = '24px', ...rest }) {
   const [error, setError] = useState(false)
 
   let path = require(`../../assets/placeholder.png`)
 
   if (token) {
-    path = require(`../../assets/tokens/${token}.svg`)
+    path = logos[token] || require(`../../assets/tokens/${token}.svg`)
   }
 
   useEffect(() => {
