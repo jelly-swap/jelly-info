@@ -10,12 +10,15 @@ function useLiquidityChartContext() {
   return useContext(LiquidityChartContext)
 }
 
-function reducer(__state, { type, payload }) {
+function reducer(state, { type, payload }) {
   switch (type) {
     case UPDATE: {
-      const chartData = payload
-      const result = chartData.sort((a, b) => a.date - b.date)
-      return [...result]
+      if (payload?.sort) {
+        const result = payload?.sort((a, b) => a.date - b.date)
+        return [...result]
+      }
+
+      return state
     }
     default: {
       throw Error(`Unexpected action type in LiquidityChartContext reducer: '${type}'.`)
@@ -24,7 +27,7 @@ function reducer(__state, { type, payload }) {
 }
 
 export default function Provider({ children }) {
-  const [state, dispatch] = useReducer(reducer, [])
+  const [state, dispatch] = useReducer(reducer, [{ date: new Date(), totalLiquidityUsd: 200000 }])
 
   const update = useCallback(providers => {
     dispatch({ type: UPDATE, payload: providers })
