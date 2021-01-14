@@ -27,7 +27,7 @@ function reducer(state, { type, payload }) {
 }
 
 export default function Provider({ children }) {
-  const [state, dispatch] = useReducer(reducer, [{ date: new Date(), totalLiquidityUsd: 200000 }])
+  const [state, dispatch] = useReducer(reducer, [])
 
   const update = useCallback(providers => {
     dispatch({ type: UPDATE, payload: providers })
