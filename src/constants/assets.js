@@ -80,6 +80,14 @@ export const ASSETS_MAP = {
     addressExplorer: 'https://bscscan.com/address/'
   },
 
+  XDC: {
+    name: 'XinFin',
+    symbol: 'XDC',
+    decimals: 18,
+    txExplorer: 'https://explorer.xinfin.network/tx/',
+    addressExplorer: 'https://explorer.xinfin.network/addr/'
+  },
+
   ALGO: {
     name: 'Algorand',
     symbol: 'ALGO',
