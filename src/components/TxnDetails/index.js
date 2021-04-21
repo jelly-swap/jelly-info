@@ -113,6 +113,7 @@ export default ({ transaction }) => {
     expiration,
     sender,
     outputAddress,
+    receiver,
     completenessTransactionHash,
     inputAmountNum,
     outputAmountNum
@@ -122,19 +123,19 @@ export default ({ transaction }) => {
 
   return (
     <TransactionWrapper>
-      <div className="transaction-wrapper">
+      <div className='transaction-wrapper'>
         <div>
           <Link color={'#ff007a'} external href={`${ASSETS_MAP[network].txExplorer}${transactionHash}`}>
             {
               <>
-                <span className="label">Transaction hash:</span>{' '}
+                <span className='label'>Transaction hash:</span>{' '}
                 {below780 ? formatAddress(transactionHash) : transactionHash}
               </>
             }
           </Link>
         </div>
         <div>
-          <span className="label">Status:</span>
+          <span className='label'>Status:</span>
           <DataText>
             <span style={{ textTransform: 'capitalize', color: STATUS_COLOR[STATUS[status]] }}>
               <strong>{STATUS[status].toLowerCase()}</strong>
@@ -142,14 +143,14 @@ export default ({ transaction }) => {
           </DataText>
         </div>
         <div>
-          <span className="label">Sent:</span>
+          <span className='label'>Sent:</span>
           <DataText>
             {inputAmountNum}
             <FormattedName text={<TokenLogo token={network} />} maxCharacters={5} margin={true} />
           </DataText>
         </div>
         <div>
-          <span className="label">Received:</span>
+          <span className='label'>Received:</span>
           <DataText>
             {outputAmountNum}
             <FormattedName text={<TokenLogo token={outputNetwork} />} maxCharacters={5} margin={true} />
@@ -159,7 +160,7 @@ export default ({ transaction }) => {
           <Link color={'#ff007a'} external href={`${ASSETS_MAP[network].addressExplorer}${sender}`}>
             {
               <>
-                <span className="label">From: </span> {below780 ? formatAddress(sender) : sender}
+                <span className='label'>From: </span> {below780 ? formatAddress(sender) : sender}
               </>
             }
           </Link>
@@ -168,17 +169,27 @@ export default ({ transaction }) => {
           <Link color={'#ff007a'} external href={`${ASSETS_MAP[outputNetwork].addressExplorer}${outputAddress}`}>
             {
               <>
-                <span className="label">To: </span> {below780 ? formatAddress(outputAddress) : outputAddress}
+                <span className='label'>To: </span> {below780 ? formatAddress(receiver) : receiver}
               </>
             }
           </Link>
         </div>
         <div>
-          <span className="label">Block: </span>
+          <Link color={'#ff007a'} external href={`${ASSETS_MAP[outputNetwork].addressExplorer}${outputAddress}`}>
+            {
+              <>
+                <span className='label'>Output Address: </span>{' '}
+                {below780 ? formatAddress(outputAddress) : outputAddress}
+              </>
+            }
+          </Link>
+        </div>
+        <div>
+          <span className='label'>Block: </span>
           <DataText>{blockNumber}</DataText>
         </div>
         <div>
-          <span className="label">Expiration: </span>
+          <span className='label'>Expiration: </span>
           <DataText>{formatDate(expiration)}</DataText>
         </div>
 
@@ -187,7 +198,7 @@ export default ({ transaction }) => {
             <Link color={'#ff007a'} external href={`${ASSETS_MAP[network].txExplorer}${completenessTransactionHash}`}>
               {
                 <>
-                  <span className="label">{STATUS[status].toLowerCase()}: </span>{' '}
+                  <span className='label'>{STATUS[status].toLowerCase()}: </span>{' '}
                   {below780 ? formatAddress(completenessTransactionHash) : completenessTransactionHash}
                 </>
               }

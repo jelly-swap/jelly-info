@@ -140,7 +140,7 @@ const TXN_TYPE = {
 const ITEMS_PER_PAGE = 10
 
 // @TODO rework into virtualized list
-function TxnList({ history, color }) {
+function TxnList ({ history, color }) {
   // page state
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -205,18 +205,18 @@ function TxnList({ history, color }) {
   const ListItem = ({ item, index }) => {
     return (
       <DashGrid style={{ height: '48px' }} className={`${index - 1 === rowToExpand ? 'expand' : ''}`}>
-        <DataText area="txn" fontWeight="500">
+        <DataText area='txn' fontWeight='500'>
           <Link color={color} external href={`${ASSETS_MAP[item.network].txExplorer}${item.transactionHash}`}>
             {`Swap ${item.network} for ${item.outputNetwork}`}
           </Link>
         </DataText>
 
-        <DataText area="amountToken">
+        <DataText area='amountToken'>
           {item.inputAmountNum} <FormattedName text={item.network} maxCharacters={5} margin={true} />
         </DataText>
 
         {!below780 && (
-          <DataText area="amountOther">
+          <DataText area='amountOther'>
             {item.outputAmountNum}
             <FormattedName text={item.outputNetwork} maxCharacters={5} margin={true} />
           </DataText>
@@ -224,7 +224,7 @@ function TxnList({ history, color }) {
 
         {!below1080 && (
           <>
-            <DataText area="from">
+            <DataText area='from'>
               <Link color={color} external href={`${ASSETS_MAP[item.network].addressExplorer}${item.sender}`}>
                 {item.sender && formatAddress(item.sender)}
               </Link>
@@ -233,20 +233,16 @@ function TxnList({ history, color }) {
         )}
 
         {!below1080 && (
-          <DataText area="to">
-            <Link
-              color={color}
-              external
-              href={`${ASSETS_MAP[item.outputNetwork].addressExplorer}${item.outputAddress}`}
-            >
-              {item.outputAddress && formatAddress(item.outputAddress)}
+          <DataText area='to'>
+            <Link color={color} external href={`${ASSETS_MAP[item.outputNetwork].addressExplorer}${item.receiver}`}>
+              {item.receiver && formatAddress(item.receiver)}
             </Link>
           </DataText>
         )}
 
-        <DataText area="time">{formatDate(item.expiration)}</DataText>
+        <DataText area='time'>{formatDate(item.expiration)}</DataText>
 
-        {index - 1 === rowToExpand ? <DataText area="time">↑</DataText> : <DataText area="time">↓</DataText>}
+        {index - 1 === rowToExpand ? <DataText area='time'>↑</DataText> : <DataText area='time'>↓</DataText>}
         {index - 1 === rowToExpand && <TxnDetails transaction={transactionToShow} />}
       </DashGrid>
     )
@@ -255,14 +251,14 @@ function TxnList({ history, color }) {
   return (
     <>
       <DashGrid center={true} style={{ height: 'fit-content', padding: '0 0 1rem 0' }}>
-        <Flex alignItems="center" justifyContent="flexStart">
-          <TYPE.main area="txn">Pair</TYPE.main>
+        <Flex alignItems='center' justifyContent='flexStart'>
+          <TYPE.main area='txn'>Pair</TYPE.main>
         </Flex>
 
-        <Flex alignItems="center">
+        <Flex alignItems='center'>
           <ClickableText
-            area="amountToken"
-            color="textDim"
+            area='amountToken'
+            color='textDim'
             onClick={() => {
               setSortedColumn(SORT_FIELD.AMOUNT0)
               setSortDirection(sortedColumn !== SORT_FIELD.AMOUNT0 ? true : !sortDirection)
@@ -275,10 +271,10 @@ function TxnList({ history, color }) {
 
         <>
           {!below780 && (
-            <Flex alignItems="center">
+            <Flex alignItems='center'>
               <ClickableText
-                area="amountOther"
-                color="textDim"
+                area='amountOther'
+                color='textDim'
                 onClick={() => {
                   setSortedColumn(SORT_FIELD.AMOUNT1)
                   setSortDirection(sortedColumn !== SORT_FIELD.AMOUNT1 ? true : !sortDirection)
@@ -291,21 +287,21 @@ function TxnList({ history, color }) {
           )}
 
           {!below1080 && (
-            <Flex alignItems="center">
-              <TYPE.body area="account">From</TYPE.body>
+            <Flex alignItems='center'>
+              <TYPE.body area='account'>From</TYPE.body>
             </Flex>
           )}
 
           {!below1080 && (
-            <Flex alignItems="center">
-              <TYPE.body area="account">To</TYPE.body>
+            <Flex alignItems='center'>
+              <TYPE.body area='account'>To</TYPE.body>
             </Flex>
           )}
 
-          <Flex alignItems="center">
+          <Flex alignItems='center'>
             <ClickableText
-              area="time"
-              color="textDim"
+              area='time'
+              color='textDim'
               onClick={() => {
                 setSortedColumn(SORT_FIELD.TIMESTAMP)
                 setSortDirection(sortedColumn !== SORT_FIELD.TIMESTAMP ? true : !sortDirection)
